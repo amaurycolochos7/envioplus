@@ -242,6 +242,12 @@ textarea {
     line-height: 1;
 }
 
+.btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
 .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -303,9 +309,14 @@ textarea {
 
 @media (max-width: 768px) {
     .btn-lg {
-        padding: 12px 24px;
+        padding: 10px 20px;
         font-size: var(--font-size-sm);
-        border-radius: var(--radius-lg);
+        border-radius: var(--radius-md);
+    }
+
+    .btn svg {
+        width: 18px;
+        height: 18px;
     }
 }
 
@@ -1593,12 +1604,13 @@ textarea {
 
     .hero-tracking-form {
         flex-direction: column;
-        padding: var(--space-4);
-        gap: var(--space-4);
+        padding: var(--space-2);
+        gap: var(--space-2);
     }
 
     .hero-tracking-form .btn {
         width: 100%;
+        padding: 10px;
     }
 
     .problem-grid {
@@ -1667,12 +1679,14 @@ textarea {
     .hero-actions {
         flex-direction: column;
         width: 100%;
-        gap: var(--space-3);
+        gap: var(--space-2);
     }
 
     .hero-actions .btn {
         width: 100%;
-        max-width: 280px;
+        max-width: 240px;
+        padding: 10px 20px;
+        font-size: var(--font-size-sm);
     }
 
     .client-types-grid {
