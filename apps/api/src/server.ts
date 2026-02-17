@@ -14,8 +14,12 @@ const app = Fastify({
 });
 
 // ─── Plugins ──────────────────────────────────────────────
+const corsOrigins = process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',')
+    : true; // dev: allow all
+
 await app.register(cors, {
-    origin: true,
+    origin: corsOrigins,
     credentials: true,
 });
 
