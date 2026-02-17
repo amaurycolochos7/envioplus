@@ -296,9 +296,17 @@ textarea {
 }
 
 .btn-lg {
-    padding: 16px 36px;
+    padding: 16px 32px;
     font-size: var(--font-size-base);
     border-radius: var(--radius-xl);
+}
+
+@media (max-width: 768px) {
+    .btn-lg {
+        padding: 12px 24px;
+        font-size: var(--font-size-sm);
+        border-radius: var(--radius-lg);
+    }
 }
 
 .btn-sm {
@@ -618,6 +626,7 @@ textarea {
     display: flex;
     gap: var(--space-4);
     align-items: center;
+    margin-top: var(--space-4);
 }
 
 .hero-visual {
@@ -1578,11 +1587,18 @@ textarea {
     }
 
     .hero-title {
-        font-size: var(--font-size-3xl);
+        font-size: clamp(32px, 8vw, 40px);
+        line-height: 1.1;
     }
 
     .hero-tracking-form {
         flex-direction: column;
+        padding: var(--space-4);
+        gap: var(--space-4);
+    }
+
+    .hero-tracking-form .btn {
+        width: 100%;
     }
 
     .problem-grid {
@@ -1651,10 +1667,12 @@ textarea {
     .hero-actions {
         flex-direction: column;
         width: 100%;
+        gap: var(--space-3);
     }
 
     .hero-actions .btn {
         width: 100%;
+        max-width: 280px;
     }
 
     .client-types-grid {
