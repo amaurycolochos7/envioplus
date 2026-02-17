@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Roles ────────────────────────────────────────────────
+enum Role {
+  ADMIN
+  SUPERVISOR
+  OPERATOR
+}
+
+// ─── Estatus de guía ──────────────────────────────────────
+enum ShipmentStatus {
+  CREATED
+  PICKED_UP
+  RECEIVED_AT_ORIGIN
+  IN_TRANSIT
+  AT_DESTINATION_BRANCH
+  OUT_FOR_DELIVERY
+  DELIVERED
+  INCIDENCE
+  CANCELLED
+}
+
+enum PackageType {
+  ENVELOPE
+  BOX
+  PACKAGE
+  OTHER
+}
+
+enum ServiceType {
+  STANDARD
+  EXPRESS
+}
+
+enum PaymentMethod {
+  CASH
+  TRANSFER
+  CARD
+  OTHER
+}
+
+enum PrintTemplateType {
+  PDF
+  ZPL
+}
+
+enum NotificationChannel {
+  WHATSAPP
+  SMS
+  EMAIL
+}
+
+// ─── Usuarios ─────────────────────────────────────────────
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String
+  role         Role     @default(OPERATOR)
+  active       Boolean  @default(true)
+  branchId     String?  @map("branch_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  branch          Branch?          @relation(fields: [branchId], references: [id])
+  shipmentsCreated Shipment[]      @relation("CreatedByUser")
+  shipmentEvents  ShipmentEvent[]  @relation("EventCreatedBy")
+  auditLogs       AuditLog[]
+
+  @@map("users")
+}
+
+// ─── Sucursales ───────────────────────────────────────────
+model Branch {
+  id        String   @id @default(uuid())
+  name      String
+  address   String?
+  phone     String?
+  schedule  String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  users              User[]
+  shipmentsAsOrigin  Shipment[]       @relation("OriginBranch")
+  shipmentsAsDest    Shipment[]       @relation("DestinationBranch")
+  shipmentEvents     ShipmentEvent[]
+  printTemplates     PrintTemplate[]
+
+  @@map("branches")
+}
+
+// ─── Guías / Envíos ──────────────────────────────────────
+model Shipment {
+  id              String         @id @default(uuid())
+  trackingNumber  String         @unique @map("tracking_number")
+  currentStatus   ShipmentStatus @default(CREATED) @map("current_status")
+
+  // Remitente
+  senderName      String   @map("sender_name")
+  senderPhone     String   @map("sender_phone")
+  senderEmail     String?  @map("sender_email")
+  senderAddress   Json     @map("sender_address") // {street, number, neighborhood, city, state, zip, references}
+
+  // Destinatario
+  recipientName   String   @map("recipient_name")
+  recipientPhone  String   @map("recipient_phone")
+  recipientEmail  String?  @map("recipient_email")
+  recipientAddress Json    @map("recipient_address")
+
+  // Paquete
+  packageType     PackageType @default(PACKAGE) @map("package_type")
+  weight          Float?
+  dimensions      Json?      // {length, width, height} in cm
+  declaredContent String?    @map("declared_content")
+  declaredValue   Float?     @map("declared_value")
+
+  // Servicio
+  serviceType     ServiceType @default(STANDARD) @map("service_type")
+  insurance       Boolean     @default(false)
+  insuranceAmount Float?      @map("insurance_amount")
+  pickupRequested Boolean     @default(false) @map("pickup_requested")
+
+  // Cobro
+  paymentMethod   PaymentMethod @default(CASH) @map("payment_method")
+  subtotal        Float         @default(0)
+  extras          Float         @default(0)
+  totalAmount     Float         @default(0) @map("total_amount")
+
+  // Relaciones
+  originBranchId      String?  @map("origin_branch_id")
+  destinationBranchId String?  @map("destination_branch_id")
+  createdByUserId     String   @map("created_by_user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  originBranch      Branch?          @relation("OriginBranch", fields: [originBranchId], references: [id])
+  destinationBranch Branch?          @relation("DestinationBranch", fields: [destinationBranchId], references: [id])
+  createdBy         User             @relation("CreatedByUser", fields: [createdByUserId], references: [id])
+  events            ShipmentEvent[]
+  notifications     NotificationLog[]
+
+  @@index([currentStatus])
+  @@index([createdAt])
+  @@index([trackingNumber])
+  @@map("shipments")
+}
+
+// ─── Eventos / Timeline ──────────────────────────────────
+model ShipmentEvent {
+  id          String         @id @default(uuid())
+  shipmentId  String         @map("shipment_id")
+  status      ShipmentStatus
+  notes       String?
+  location    String?
+  branchId    String?        @map("branch_id")
+  createdById String         @map("created_by_id")
+  createdAt   DateTime       @default(now()) @map("created_at")
+
+  shipment  Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  branch    Branch?  @relation(fields: [branchId], references: [id])
+  createdBy User     @relation("EventCreatedBy", fields: [createdById], references: [id])
+
+  @@index([shipmentId, createdAt])
+  @@map("shipment_events")
+}
+
+// ─── Plantillas de impresión ─────────────────────────────
+model PrintTemplate {
+  id        String            @id @default(uuid())
+  name      String
+  type      PrintTemplateType
+  paperSize String            @map("paper_size") // "4x6", "LETTER", "A6", "custom"
+  content   String            @db.Text
+  margins   Json?             // {top, left, right, bottom}
+  isDefault Boolean           @default(false) @map("is_default")
+  branchId  String?           @map("branch_id")
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+
+  branch Branch? @relation(fields: [branchId], references: [id])
+
+  @@map("print_templates")
+}
+
+// ─── Auditoría ───────────────────────────────────────────
+model AuditLog {
+  id         String   @id @default(uuid())
+  entityType String   @map("entity_type") // "shipment", "user", "branch", etc.
+  entityId   String   @map("entity_id")
+  action     String   // "create", "update", "cancel", "reprint", etc.
+  before     Json?
+  after      Json?
+  userId     String   @map("user_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([userId, createdAt])
+  @@map("audit_logs")
+}
+
+// ─── Log de notificaciones ───────────────────────────────
+model NotificationLog {
+  id         String              @id @default(uuid())
+  shipmentId String              @map("shipment_id")
+  channel    NotificationChannel
+  recipient  String
+  message    String              @db.Text
+  status     String              @default("pending") // "pending", "sent", "failed"
+  sentAt     DateTime?           @map("sent_at")
+  createdAt  DateTime            @default(now()) @map("created_at")
+
+  shipment Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+
+  @@map("notification_logs")
+}

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: envioplus-db
+    restart: unless-stopped
+    ports:
+      - '${POSTGRES_PORT:-5555}:5432'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-envioplus}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-envioplus}
+    volumes:
+      - envioplus_pgdata:/var/lib/postgresql/data
+
+volumes:
+  envioplus_pgdata:
+
