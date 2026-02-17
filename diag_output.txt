@@ -1,0 +1,53 @@
+=== DOCKER SERVICES ===
+app-quantify-multi-byte-port-clyz5k 0/1 
+app-transmit-wireless-array-3rx6j5 1/1 
+dokploy 1/1 
+dokploy-postgres 1/1 
+dokploy-redis 1/1 
+postgres-synthesize-redundant-bandwidth-f66kwz 1/1 
+postgres-transmit-solid-state-firewall-yq5oc1 1/1 
+
+=== DOKPLOY ENV VARS ===
+["RELEASE_TAG=v0.27.0"
+"ADVERTISE_ADDR=172.17.0.1"
+"POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password"]
+
+=== DOCKER NETWORKS ===
+bridge bridge
+docker_gwbridge bridge
+dokploy-network overlay
+host host
+ingress overlay
+none null
+
+=== DOCKER VOLUMES ===
+dokploy
+dokploy-postgres
+dokploy-redis
+postgres-synthesize-redundant-bandwidth-f66kwz-data
+postgres-transmit-solid-state-firewall-yq5oc1-data
+
+=== DOKPLOY PORT MAPPING ===
+[{"Protocol":"tcp","TargetPort":3000,"PublishedPort":3000,"PublishMode":"host"}]
+
+=== ALL CONTAINERS ===
+dokploy.1.ccj5p2iltiyoaxcr3o6y3p1zu dokploy/dokploy:v0.27.0 Up 22 minutes (healthy)
+dokploy.1.qax6gzwsrpu10h85oxk5naquf dokploy/dokploy:v0.27.0 Created
+dokploy.1.zpk561hv9t0qlk95m8cjqsshs dokploy/dokploy:v0.27.0 Created
+dokploy.1.8kwdodsjdhv65kllyt9c989ei dokploy/dokploy:v0.27.0 Created
+dokploy-postgres.1.4vf5sh0f9gip9zfav61hwegct postgres:16 Up 23 minutes
+dokploy-redis.1.oaooa38o7tugl69y835spqzmu redis:7 Up 23 minutes
+dokploy.1.fit1ytjxoilssd4st7elos01a dokploy/dokploy:v0.27.0 Created
+postgres-synthesize-redundant-bandwidth-f66kwz.1.arodv8ymm0hizrx1nrfk5ly59 postgres:16-alpine Up About an hour
+app-transmit-wireless-array-3rx6j5.1.2vdylzpt8yczwujqrh8ij6009 app-transmit-wireless-array-3rx6j5:latest Up 6 days (healthy)
+app-transmit-wireless-array-3rx6j5.1.uxn1wi0ye2t67c4tdc8o9djdd 5a2a9d3588f9 Exited (137) 6 days ago
+postgres-transmit-solid-state-firewall-yq5oc1.1.vrn5h8g2a92wj44oyddpt6aqu d7ead3a9d3fe Up 6 days
+app-transmit-wireless-array-3rx6j5.1.aft59y8aj7b431qh67mkr18vr 34427384a1e5 Exited (137) 6 days ago
+app-transmit-wireless-array-3rx6j5.1.toz0sbpsowa38skgn4hgig6wg eb2308adcd7a Exited (137) 6 days ago
+postgres-transmit-solid-state-firewall-yq5oc1.1.49dovpa7yvq6s2v3aas634rzx d7ead3a9d3fe Exited (0) 6 days ago
+postgres-transmit-solid-state-firewall-yq5oc1.1.f3be7wytky37awqxjz90ajapr d7ead3a9d3fe Exited (0) 6 days ago
+dokploy-traefik traefik:v3.6.7 Up 23 minutes
+dokploy-redis.1.02x80iktm0unhon41no1jduy7 redis:7 Up 23 minutes
+dokploy-postgres.1.vujv3yb7f16oytqx7e86ltb9j postgres:16 Up 23 minutes
+
+=== DONE ===

@@ -1,0 +1,200 @@
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     'echo "✅ Docker build completed." ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '\t\t) >> /etc/dokploy/logs/app-input-1080p-capacitor-nyq9z1/app-input-1080p-capacitor-nyq9z1-2026-02-17:09:00:53.log 2>&1',
+dokploy.1.ccj5p2iltiyo@srv1355882    |   stdout: '',
+dokploy.1.ccj5p2iltiyo@srv1355882    |   stderr: '',
+dokploy.1.ccj5p2iltiyo@srv1355882    |   exitCode: 1,
+dokploy.1.ccj5p2iltiyo@srv1355882    |   originalError: Error: Command failed: (set -e;set -e;echo "Error: ❌ Repository not found"; exit 1;echo "REFUQUJBU0VfVVJMPXBvc3RncmVzcWw6Ly9lbnZpb3BsdXM6RW52aW9QbHVzMjAyNlNlY3VyZUBwb3N0Z3Jlcy1zeW50aGVzaXplLXJlZHVuZGFudC1iYW5kd2lkdGgtZjY2a3d6OjU0MzIvZW52aW9wbHVzCkpXVF9TRUNSRVQ9RW52aW9QbHVzLUpXVC1TZWNyZXQtMjAyNi1Qcm9kdWN0aW9uCkNPUlNfT1JJR0lOUz1odHRwczovL2FkbWluLmVudmlvcGx1cy5jb20ubXgsaHR0cHM6Ly9lbnZpb3BsdXMuY29tLm14ClBPUlQ9MzAwMQpOT0RFX0VOVj1wcm9kdWN0aW9u" | base64 -d > "/etc/dokploy/applications/app-input-1080p-capacitor-nyq9z1/code/apps/api/.env";
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "Building app-input-1080p-capacitor-nyq9z1" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   cd /etc/dokploy/applications/app-input-1080p-capacitor-nyq9z1/code || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |     echo "❌ The path /etc/dokploy/applications/app-input-1080p-capacitor-nyq9z1/code does not exist" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |     exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   }
+dokploy.1.ccj5p2iltiyo@srv1355882    |   
+dokploy.1.ccj5p2iltiyo@srv1355882    |    docker build -t app-input-1080p-capacitor-nyq9z1 -f /etc/dokploy/applications/app-input-1080p-capacitor-nyq9z1/code/apps/api/Dockerfile . || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |     echo "❌ Docker build failed" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |     exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   }
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "✅ Docker build completed." ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   		) >> /etc/dokploy/logs/app-input-1080p-capacitor-nyq9z1/app-input-1080p-capacitor-nyq9z1-2026-02-17:09:00:53.log 2>&1
+dokploy.1.ccj5p2iltiyo@srv1355882    |   
+dokploy.1.ccj5p2iltiyo@srv1355882    |       at ignore-listed frames {
+dokploy.1.ccj5p2iltiyo@srv1355882    |     code: 1,
+dokploy.1.ccj5p2iltiyo@srv1355882    |     killed: false,
+dokploy.1.ccj5p2iltiyo@srv1355882    |     signal: null,
+dokploy.1.ccj5p2iltiyo@srv1355882    |     cmd: '(set -e;set -e;echo "Error: ❌ Repository not found"; exit 1;echo "REFUQUJBU0VfVVJMPXBvc3RncmVzcWw6Ly9lbnZpb3BsdXM6RW52aW9QbHVzMjAyNlNlY3VyZUBwb3N0Z3Jlcy1zeW50aGVzaXplLXJlZHVuZGFudC1iYW5kd2lkdGgtZjY2a3d6OjU0MzIvZW52aW9wbHVzCkpXVF9TRUNSRVQ9RW52aW9QbHVzLUpXVC1TZWNyZXQtMjAyNi1Qcm9kdWN0aW9uCkNPUlNfT1JJR0lOUz1odHRwczovL2FkbWluLmVudmlvcGx1cy5jb20ubXgsaHR0cHM6Ly9lbnZpb3BsdXMuY29tLm14ClBPUlQ9MzAwMQpOT0RFX0VOVj1wcm9kdWN0aW9u" | base64 -d > "/etc/dokploy/applications/app-input-1080p-capacitor-nyq9z1/code/apps/api/.env";\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       'echo "Building app-input-1080p-capacitor-nyq9z1" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       'cd /etc/dokploy/applications/app-input-1080p-capacitor-nyq9z1/code || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  echo "❌ The path /etc/dokploy/applications/app-input-1080p-capacitor-nyq9z1/code does not exist" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       ' docker build -t app-input-1080p-capacitor-nyq9z1 -f /etc/dokploy/applications/app-input-1080p-capacitor-nyq9z1/code/apps/api/Dockerfile . || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  echo "❌ Docker build failed" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       'echo "✅ Docker build completed." ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\t\t) >> /etc/dokploy/logs/app-input-1080p-capacitor-nyq9z1/app-input-1080p-capacitor-nyq9z1-2026-02-17:09:00:53.log 2>&1',
+dokploy.1.ccj5p2iltiyo@srv1355882    |     stdout: '',
+dokploy.1.ccj5p2iltiyo@srv1355882    |     stderr: ''
+dokploy.1.ccj5p2iltiyo@srv1355882    |   },
+dokploy.1.ccj5p2iltiyo@srv1355882    |   serverId: undefined
+dokploy.1.ccj5p2iltiyo@srv1355882    | }
+dokploy.1.ccj5p2iltiyo@srv1355882    | Error getting git commit info: ExecError: Command execution failed: Command failed: git -C /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code log -1 --pretty=format:"%H---DELIMITER---%B"
+dokploy.1.ccj5p2iltiyo@srv1355882    | fatal: not a git repository (or any parent up to mount point /etc)
+dokploy.1.ccj5p2iltiyo@srv1355882    | Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+dokploy.1.ccj5p2iltiyo@srv1355882    | 
+dokploy.1.ccj5p2iltiyo@srv1355882    | Error Error [ExecError]: Command execution failed: Command failed: (set -e;set -e;rm -rf /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code;mkdir -p /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code;echo "Cloning Repo Custom https://github.com/amaurycolochos7/envioplus.git to /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code: ✅";if ! git clone --branch main/ --depth 1  --progress https://github.com/amaurycolochos7/envioplus.git /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code; then
+dokploy.1.ccj5p2iltiyo@srv1355882    | 				echo "❌ [ERROR] Fail to clone the repository https://github.com/amaurycolochos7/envioplus.git";
+dokploy.1.ccj5p2iltiyo@srv1355882    | 				exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    | 			fi
+dokploy.1.ccj5p2iltiyo@srv1355882    | 			echo "" | base64 -d > "/etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code/main/apps/admin-web/.env";
+dokploy.1.ccj5p2iltiyo@srv1355882    | echo "Building app-quantify-multi-byte-port-clyz5k" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    | cd /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "❌ The path /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code does not exist" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    | }
+dokploy.1.ccj5p2iltiyo@srv1355882    | 
+dokploy.1.ccj5p2iltiyo@srv1355882    |  docker build -t app-quantify-multi-byte-port-clyz5k -f /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code/main/apps/admin-web/Dockerfile . --build-arg VITE_API_URL\=https\://api.envioplus.com.mx || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "❌ Docker build failed" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    | }
+dokploy.1.ccj5p2iltiyo@srv1355882    | echo "✅ Docker build completed." ;
+dokploy.1.ccj5p2iltiyo@srv1355882    | 		) >> /etc/dokploy/logs/app-quantify-multi-byte-port-clyz5k/app-quantify-multi-byte-port-clyz5k-2026-02-17:09:01:16.log 2>&1
+dokploy.1.ccj5p2iltiyo@srv1355882    | 
+dokploy.1.ccj5p2iltiyo@srv1355882    |     at async UP.OP.autorun [as processFn] (dist/server.mjs:1:889) {
+dokploy.1.ccj5p2iltiyo@srv1355882    |   command: '(set -e;set -e;rm -rf /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code;mkdir -p /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code;echo "Cloning Repo Custom https://github.com/amaurycolochos7/envioplus.git to /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code: ✅";if ! git clone --branch main/ --depth 1  --progress https://github.com/amaurycolochos7/envioplus.git /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code; then\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '\t\t\t\techo "❌ [ERROR] Fail to clone the repository https://github.com/amaurycolochos7/envioplus.git";\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '\t\t\t\texit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '\t\t\tfi\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '\t\t\techo "" | base64 -d > "/etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code/main/apps/admin-web/.env";\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     'echo "Building app-quantify-multi-byte-port-clyz5k" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     'cd /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '  echo "❌ The path /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code does not exist" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     ' docker build -t app-quantify-multi-byte-port-clyz5k -f /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code/main/apps/admin-web/Dockerfile . --build-arg VITE_API_URL\\=https\\://api.envioplus.com.mx || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '  echo "❌ Docker build failed" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     'echo "✅ Docker build completed." ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '\t\t) >> /etc/dokploy/logs/app-quantify-multi-byte-port-clyz5k/app-quantify-multi-byte-port-clyz5k-2026-02-17:09:01:16.log 2>&1',
+dokploy.1.ccj5p2iltiyo@srv1355882    |   stdout: '',
+dokploy.1.ccj5p2iltiyo@srv1355882    |   stderr: '',
+dokploy.1.ccj5p2iltiyo@srv1355882    |   exitCode: 1,
+dokploy.1.ccj5p2iltiyo@srv1355882    |   originalError: Error: Command failed: (set -e;set -e;rm -rf /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code;mkdir -p /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code;echo "Cloning Repo Custom https://github.com/amaurycolochos7/envioplus.git to /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code: ✅";if ! git clone --branch main/ --depth 1  --progress https://github.com/amaurycolochos7/envioplus.git /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code; then
+dokploy.1.ccj5p2iltiyo@srv1355882    |   				echo "❌ [ERROR] Fail to clone the repository https://github.com/amaurycolochos7/envioplus.git";
+dokploy.1.ccj5p2iltiyo@srv1355882    |   				exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   			fi
+dokploy.1.ccj5p2iltiyo@srv1355882    |   			echo "" | base64 -d > "/etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code/main/apps/admin-web/.env";
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "Building app-quantify-multi-byte-port-clyz5k" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   cd /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |     echo "❌ The path /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code does not exist" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |     exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   }
+dokploy.1.ccj5p2iltiyo@srv1355882    |   
+dokploy.1.ccj5p2iltiyo@srv1355882    |    docker build -t app-quantify-multi-byte-port-clyz5k -f /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code/main/apps/admin-web/Dockerfile . --build-arg VITE_API_URL\=https\://api.envioplus.com.mx || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |     echo "❌ Docker build failed" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |     exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   }
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "✅ Docker build completed." ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   		) >> /etc/dokploy/logs/app-quantify-multi-byte-port-clyz5k/app-quantify-multi-byte-port-clyz5k-2026-02-17:09:01:16.log 2>&1
+dokploy.1.ccj5p2iltiyo@srv1355882    |   
+dokploy.1.ccj5p2iltiyo@srv1355882    |       at ignore-listed frames {
+dokploy.1.ccj5p2iltiyo@srv1355882    |     code: 1,
+dokploy.1.ccj5p2iltiyo@srv1355882    |     killed: false,
+dokploy.1.ccj5p2iltiyo@srv1355882    |     signal: null,
+dokploy.1.ccj5p2iltiyo@srv1355882    |     cmd: '(set -e;set -e;rm -rf /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code;mkdir -p /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code;echo "Cloning Repo Custom https://github.com/amaurycolochos7/envioplus.git to /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code: ✅";if ! git clone --branch main/ --depth 1  --progress https://github.com/amaurycolochos7/envioplus.git /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code; then\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\t\t\t\techo "❌ [ERROR] Fail to clone the repository https://github.com/amaurycolochos7/envioplus.git";\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\t\t\t\texit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\t\t\tfi\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\t\t\techo "" | base64 -d > "/etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code/main/apps/admin-web/.env";\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       'echo "Building app-quantify-multi-byte-port-clyz5k" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       'cd /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  echo "❌ The path /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code does not exist" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       ' docker build -t app-quantify-multi-byte-port-clyz5k -f /etc/dokploy/applications/app-quantify-multi-byte-port-clyz5k/code/main/apps/admin-web/Dockerfile . --build-arg VITE_API_URL\\=https\\://api.envioplus.com.mx || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  echo "❌ Docker build failed" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       'echo "✅ Docker build completed." ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\t\t) >> /etc/dokploy/logs/app-quantify-multi-byte-port-clyz5k/app-quantify-multi-byte-port-clyz5k-2026-02-17:09:01:16.log 2>&1',
+dokploy.1.ccj5p2iltiyo@srv1355882    |     stdout: '',
+dokploy.1.ccj5p2iltiyo@srv1355882    |     stderr: ''
+dokploy.1.ccj5p2iltiyo@srv1355882    |   },
+dokploy.1.ccj5p2iltiyo@srv1355882    |   serverId: undefined
+dokploy.1.ccj5p2iltiyo@srv1355882    | }
+dokploy.1.ccj5p2iltiyo@srv1355882    | Error getting git commit info: ExecError: Command execution failed: Command failed: git -C /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code log -1 --pretty=format:"%H---DELIMITER---%B"
+dokploy.1.ccj5p2iltiyo@srv1355882    | fatal: cannot change to '/etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code': No such file or directory
+dokploy.1.ccj5p2iltiyo@srv1355882    | 
+dokploy.1.ccj5p2iltiyo@srv1355882    | Error Error [ExecError]: Command execution failed: Command failed: (set -e;set -e;echo "Error: ❌ Repository not found"; exit 1;echo "" | base64 -d > "/etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code/apps/public-web/.env";
+dokploy.1.ccj5p2iltiyo@srv1355882    | echo "Building app-parse-redundant-monitor-hrqneu" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    | cd /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "❌ The path /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code does not exist" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    | }
+dokploy.1.ccj5p2iltiyo@srv1355882    | 
+dokploy.1.ccj5p2iltiyo@srv1355882    |  docker build -t app-parse-redundant-monitor-hrqneu -f /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code/apps/public-web/Dockerfile . --build-arg VITE_API_URL\=https\://api.envioplus.com.mx || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "❌ Docker build failed" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    | }
+dokploy.1.ccj5p2iltiyo@srv1355882    | echo "✅ Docker build completed." ;
+dokploy.1.ccj5p2iltiyo@srv1355882    | 		) >> /etc/dokploy/logs/app-parse-redundant-monitor-hrqneu/app-parse-redundant-monitor-hrqneu-2026-02-17:09:04:07.log 2>&1
+dokploy.1.ccj5p2iltiyo@srv1355882    | 
+dokploy.1.ccj5p2iltiyo@srv1355882    |     at async UP.OP.autorun [as processFn] (dist/server.mjs:1:889) {
+dokploy.1.ccj5p2iltiyo@srv1355882    |   command: '(set -e;set -e;echo "Error: ❌ Repository not found"; exit 1;echo "" | base64 -d > "/etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code/apps/public-web/.env";\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     'echo "Building app-parse-redundant-monitor-hrqneu" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     'cd /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '  echo "❌ The path /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code does not exist" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     ' docker build -t app-parse-redundant-monitor-hrqneu -f /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code/apps/public-web/Dockerfile . --build-arg VITE_API_URL\\=https\\://api.envioplus.com.mx || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '  echo "❌ Docker build failed" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     'echo "✅ Docker build completed." ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |     '\t\t) >> /etc/dokploy/logs/app-parse-redundant-monitor-hrqneu/app-parse-redundant-monitor-hrqneu-2026-02-17:09:04:07.log 2>&1',
+dokploy.1.ccj5p2iltiyo@srv1355882    |   stdout: '',
+dokploy.1.ccj5p2iltiyo@srv1355882    |   stderr: '',
+dokploy.1.ccj5p2iltiyo@srv1355882    |   exitCode: 1,
+dokploy.1.ccj5p2iltiyo@srv1355882    |   originalError: Error: Command failed: (set -e;set -e;echo "Error: ❌ Repository not found"; exit 1;echo "" | base64 -d > "/etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code/apps/public-web/.env";
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "Building app-parse-redundant-monitor-hrqneu" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   cd /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |     echo "❌ The path /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code does not exist" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |     exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   }
+dokploy.1.ccj5p2iltiyo@srv1355882    |   
+dokploy.1.ccj5p2iltiyo@srv1355882    |    docker build -t app-parse-redundant-monitor-hrqneu -f /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code/apps/public-web/Dockerfile . --build-arg VITE_API_URL\=https\://api.envioplus.com.mx || { 
+dokploy.1.ccj5p2iltiyo@srv1355882    |     echo "❌ Docker build failed" ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |     exit 1;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   }
+dokploy.1.ccj5p2iltiyo@srv1355882    |   echo "✅ Docker build completed." ;
+dokploy.1.ccj5p2iltiyo@srv1355882    |   		) >> /etc/dokploy/logs/app-parse-redundant-monitor-hrqneu/app-parse-redundant-monitor-hrqneu-2026-02-17:09:04:07.log 2>&1
+dokploy.1.ccj5p2iltiyo@srv1355882    |   
+dokploy.1.ccj5p2iltiyo@srv1355882    |       at ignore-listed frames {
+dokploy.1.ccj5p2iltiyo@srv1355882    |     code: 1,
+dokploy.1.ccj5p2iltiyo@srv1355882    |     killed: false,
+dokploy.1.ccj5p2iltiyo@srv1355882    |     signal: null,
+dokploy.1.ccj5p2iltiyo@srv1355882    |     cmd: '(set -e;set -e;echo "Error: ❌ Repository not found"; exit 1;echo "" | base64 -d > "/etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code/apps/public-web/.env";\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       'echo "Building app-parse-redundant-monitor-hrqneu" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       'cd /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  echo "❌ The path /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code does not exist" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       ' docker build -t app-parse-redundant-monitor-hrqneu -f /etc/dokploy/applications/app-parse-redundant-monitor-hrqneu/code/apps/public-web/Dockerfile . --build-arg VITE_API_URL\\=https\\://api.envioplus.com.mx || { \n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  echo "❌ Docker build failed" ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '  exit 1;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '}\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       'echo "✅ Docker build completed." ;\n' +
+dokploy.1.ccj5p2iltiyo@srv1355882    |       '\t\t) >> /etc/dokploy/logs/app-parse-redundant-monitor-hrqneu/app-parse-redundant-monitor-hrqneu-2026-02-17:09:04:07.log 2>&1',
+dokploy.1.ccj5p2iltiyo@srv1355882    |     stdout: '',
+dokploy.1.ccj5p2iltiyo@srv1355882    |     stderr: ''
+dokploy.1.ccj5p2iltiyo@srv1355882    |   },
+dokploy.1.ccj5p2iltiyo@srv1355882    |   serverId: undefined
+dokploy.1.ccj5p2iltiyo@srv1355882    | }

@@ -6,7 +6,7 @@ ARG VITE_API_URL=https://api.envioplus.com.mx
 
 COPY package.json package-lock.json ./
 COPY apps/public-web/package.json apps/public-web/
-RUN npm ci --workspace=public-web
+RUN npm ci --workspace=apps/public-web
 
 COPY apps/public-web/ apps/public-web/
 RUN cd apps/public-web && VITE_API_URL=$VITE_API_URL npm run build

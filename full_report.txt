@@ -1,0 +1,142 @@
+=== TOKEN OUTPUT ===
+PG_CONTAINER=f6590afe2d3fa87a54abde419d3adc9c35b192c8b2641300219633c8a09e3644
+Tables saved to /tmp/tables.txt
+All tables saved to /tmp/all_tables.txt
+Auth tables saved to /tmp/auth_tables.txt
+Project tables saved to /tmp/project_tables.txt
+
+=== ALL TABLES ===
+     table_name      
+---------------------
+ account
+ ai
+ apikey
+ application
+ backup
+ bitbucket
+ certificate
+ compose
+ custom
+ deployment
+ destination
+ discord
+ domain
+ email
+ environment
+ git_provider
+ gitea
+ github
+ gitlab
+ gotify
+ invitation
+ lark
+ mariadb
+ member
+ mongo
+ mount
+ mysql
+ notification
+ ntfy
+ organization
+ port
+ postgres
+ preview_deployments
+ project
+ pushover
+ redirect
+ redis
+ registry
+ resend
+ rollback
+ schedule
+ security
+ server
+ session_temp
+ slack
+ ssh-key
+ sso_provider
+ telegram
+ two_factor
+ user
+ verification
+ volume_backup
+ webServerSettings
+(53 rows)
+
+
+=== AUTH TABLES ===
+            table_name             
+-----------------------------------
+ pg_authid
+ pg_user_mapping
+ pg_auth_members
+ pg_user
+ pg_stat_xact_user_tables
+ pg_stat_user_tables
+ pg_statio_user_tables
+ pg_stat_user_indexes
+ pg_statio_user_indexes
+ pg_statio_user_sequences
+ pg_stat_gssapi
+ pg_stat_user_functions
+ pg_stat_xact_user_functions
+ pg_user_mappings
+ administrable_role_authorizations
+ user_defined_types
+ _pg_user_mappings
+ user_mapping_options
+ user_mappings
+ apikey
+ user
+(21 rows)
+
+
+=== PROJECT TABLES ===
+ table_name 
+------------
+ project
+(1 row)
+
+
+=== PROJECT DATA ===
+       projectId       |    name     |                      description                      
+-----------------------+-------------+-------------------------------------------------------
+ Wu0fG_HXRKdD_MVPX3rMP | KingIceGold | E-commerce Joyeria
+ A5QPSgXmWL3gsl6iLlHxS | EnvioPlus   | Plataforma de paqueter�a - API, Admin Web, Public Web
+(2 rows)
+
+
+=== APPLICATION DATA ===
+     applicationId     |       name       |               appName               | sourceType |                  repository                  
+-----------------------+------------------+-------------------------------------+------------+----------------------------------------------
+ T7Y2BDSVQ_7eOFgCUTjSM | envioplus-admin  | app-quantify-multi-byte-port-clyz5k | git        | https://github.com/amaurycolochos7/envioplus
+ lkmSzBjpRSZFJ5XHRbRJN | envioplus-api    | app-input-1080p-capacitor-nyq9z1    | git        | https://github.com/amaurycolochos7/envioplus
+ BW_b2iioWszftcufyZa3o | envioplus-public | app-parse-redundant-monitor-hrqneu  | git        | https://github.com/amaurycolochos7/envioplus
+ OW2dgI7Yf2LnDVh1Tb2Fc | KingIceGold-App  | app-transmit-wireless-array-3rx6j5  | git        | 
+(4 rows)
+
+
+=== AUTH TABLE ===
+ERROR:  relation "auth" does not exist
+LINE 1: SELECT "authId", email FROM auth;
+                                    ^
+
+=== EXISTING TOKENS ===
+ERROR:  relation "api_token" does not exist
+LINE 1: SELECT COUNT(*) FROM api_token;
+                             ^
+
+=== GIT PROVIDERS ===
+ERROR:  column "authId" does not exist
+LINE 1: SELECT "gitProviderId", "providerType", "authId" FROM git_pr...
+                                                ^
+
+=== GITHUB DATA ===
+       githubId        |     gitProviderId     |                   githubAppName                   
+-----------------------+-----------------------+---------------------------------------------------
+ Ok6X_f5mO8DQb7v-5TYTz | WO9AUzqKT00f09aLlb8px | https://github.com/apps/dokploy-2026-02-17-9zr5x7
+ kBnWUqp84-eyCJznz8A9y | 1bMuZJlM8M4OEv0vy5WGj | https://github.com/apps/dokploy-2026-02-17-9t3eip
+(2 rows)
+
+
+=== DONE ===
