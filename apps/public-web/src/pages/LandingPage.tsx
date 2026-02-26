@@ -332,9 +332,10 @@ export default function LandingPage() {
                     {/* Mexico Map Image */}
                     <div className="mexico-map-container reveal" ref={addRevealRef}>
                         <img
-                            src="/images/mexico-map.png"
-                            alt="Red logística EnvioPlus en México"
+                            src="/images/mexico-map.webp"
+                            alt="Red logistica EnvioPlus en Mexico"
                             className="mexico-map-img"
+                            loading="lazy"
                         />
                     </div>
 

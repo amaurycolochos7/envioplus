@@ -407,7 +407,7 @@ textarea {
     overflow: hidden;
     background:
         linear-gradient(135deg, rgba(77, 20, 140, 0.75) 0%, rgba(26, 10, 62, 0.80) 50%, rgba(26, 5, 51, 0.72) 100%),
-        url('/images/hero-fleet.jpeg') center 40%/cover no-repeat;
+        url('/images/hero-fleet.webp') center 40%/cover no-repeat;
     color: var(--text-on-dark);
     padding-top: 60px;
 }
