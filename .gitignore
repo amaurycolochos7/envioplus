@@ -11,3 +11,14 @@ coverage/
 .turbo/
 test-event.*
 
+# Debug / deploy files
+api_build_log.txt
+api_details.json
+deploy_logs*.txt
+projects.json
+projects_status.json
+svc*.txt
+app_columns.txt
+details_report.txt
+fix_paths.sql
+clean_map.py

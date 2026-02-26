@@ -62,8 +62,20 @@ export default function Layout() {
             {/* Sidebar */}
             <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
-                    <div className="sidebar-logo-icon">{I.package}</div>
-                    <span className="sidebar-logo-text">EnvioPlus</span>
+                    <div className="sidebar-logo-icon">
+                        <svg viewBox="0 0 48 48" fill="none" style={{ width: '100%', height: '100%' }}>
+                            <path d="M24 4L6 14v20l18 10 18-10V14L24 4z" fill="#0E7490" opacity="0.15" />
+                            <path d="M24 4L6 14l18 10 18-10L24 4z" fill="#0E7490" opacity="0.3" />
+                            <path d="M24 24v20l18-10V14L24 24z" fill="#0E7490" opacity="0.6" />
+                            <path d="M24 24v20L6 34V14l18 10z" fill="#0E7490" />
+                            <path d="M16 21l6-5 6 5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                            <path d="M22 16l4 0 0 4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.8" />
+                            <rect x="35" y="2" width="11" height="11" rx="3" fill="#0E7490" />
+                            <line x1="40.5" y1="4.5" x2="40.5" y2="10.5" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                            <line x1="37.5" y1="7.5" x2="43.5" y2="7.5" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
+                    </div>
+                    <span className="sidebar-logo-text">Envio<span style={{ color: '#0E7490' }}>Plus</span></span>
                 </div>
 
                 <nav className="sidebar-nav">
