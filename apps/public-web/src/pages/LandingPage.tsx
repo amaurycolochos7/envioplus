@@ -372,19 +372,15 @@ export default function LandingPage() {
                 <div className="fleet-carousel-wrapper reveal" ref={addRevealRef}>
                     <div className="fleet-carousel-track">
                         {[
-                            { img: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=400&fit=crop', type: 'Camioneta de reparto', cap: 'Última milla' },
-                            { img: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop', type: 'Van de carga', cap: 'Distribución urbana' },
-                            { img: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&h=400&fit=crop', type: 'Camión de carga', cap: 'Ruta nacional' },
+                            { img: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=400&fit=crop', type: 'Camioneta de reparto', cap: 'Ultima milla' },
+                            { img: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop', type: 'Van de carga', cap: 'Distribucion urbana' },
+                            { img: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&h=400&fit=crop', type: 'Camion de carga', cap: 'Ruta nacional' },
                             { img: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=600&h=400&fit=crop', type: 'Unidad refrigerada', cap: 'Carga especial' },
-                            { img: 'https://images.unsplash.com/photo-1590504805498-7e0684e27939?w=600&h=400&fit=crop', type: 'Tráiler de carga', cap: 'Volumen mayorista' },
-                            { img: 'https://images.unsplash.com/photo-1605732562742-aec009732c01?w=600&h=400&fit=crop', type: 'Sprinter ejecutiva', cap: 'Paquetería express' },
                             // Duplicates for infinite loop
-                            { img: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=400&fit=crop', type: 'Camioneta de reparto', cap: 'Última milla' },
-                            { img: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop', type: 'Van de carga', cap: 'Distribución urbana' },
-                            { img: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&h=400&fit=crop', type: 'Camión de carga', cap: 'Ruta nacional' },
+                            { img: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=400&fit=crop', type: 'Camioneta de reparto', cap: 'Ultima milla' },
+                            { img: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop', type: 'Van de carga', cap: 'Distribucion urbana' },
+                            { img: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&h=400&fit=crop', type: 'Camion de carga', cap: 'Ruta nacional' },
                             { img: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=600&h=400&fit=crop', type: 'Unidad refrigerada', cap: 'Carga especial' },
-                            { img: 'https://images.unsplash.com/photo-1590504805498-7e0684e27939?w=600&h=400&fit=crop', type: 'Tráiler de carga', cap: 'Volumen mayorista' },
-                            { img: 'https://images.unsplash.com/photo-1605732562742-aec009732c01?w=600&h=400&fit=crop', type: 'Sprinter ejecutiva', cap: 'Paquetería express' },
                         ].map((v, i) => (
                             <div className="fleet-card" key={i}>
                                 <div className="fleet-card-img" style={{ backgroundImage: `url(${v.img})` }}>
