@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
+import { useToast } from '../components/Toast';
 
 const Icons = {
     arrowLeft: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>,
@@ -19,10 +20,15 @@ const Icons = {
 
 export default function CreateShipmentPage() {
     const navigate = useNavigate();
+    const { toast } = useToast();
     const [branches, setBranches] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState<any>(null);
+    const [zipLoading, setZipLoading] = useState<{ sender?: boolean; recipient?: boolean }>({});
+    const [cityOptions, setCityOptions] = useState<{ sender: string[]; recipient: string[] }>({ sender: [], recipient: [] });
+    const [stateOptions, setStateOptions] = useState<{ sender: string[]; recipient: string[] }>({ sender: [], recipient: [] });
+    const [manualMode, setManualMode] = useState<{ senderCity?: boolean; senderState?: boolean; recipientCity?: boolean; recipientState?: boolean }>({});
 
     const [form, setForm] = useState({
         senderName: '', senderPhone: '', senderEmail: '',
@@ -46,6 +52,47 @@ export default function CreateShipmentPage() {
     const handleChange = (e: any) => {
         const { name, value, type, checked } = e.target;
         setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    };
+
+    const lookupZip = async (zip: string, prefix: 'sender' | 'recipient') => {
+        if (!zip || zip.length < 5) return;
+        setZipLoading((prev) => ({ ...prev, [prefix]: true }));
+        setManualMode((prev) => ({ ...prev, [`${prefix}City`]: false, [`${prefix}State`]: false }));
+        try {
+            const res = await fetch(`https://api.zippopotam.us/MX/${zip}`);
+            if (res.ok) {
+                const data = await res.json();
+                const places = data.places || [];
+                if (places.length > 0) {
+                    const states = [...new Set(places.map((p: any) => p.state as string))];
+                    const cities = [...new Set(places.map((p: any) => p['place name'] as string))];
+                    setStateOptions((prev) => ({ ...prev, [prefix]: states }));
+                    setCityOptions((prev) => ({ ...prev, [prefix]: cities }));
+                    setForm((prev) => ({
+                        ...prev,
+                        [`${prefix}State`]: states[0] || '',
+                        [`${prefix}City`]: cities[0] || '',
+                    }));
+                }
+            } else {
+                setCityOptions((prev) => ({ ...prev, [prefix]: [] }));
+                setStateOptions((prev) => ({ ...prev, [prefix]: [] }));
+            }
+        } catch {
+            setCityOptions((prev) => ({ ...prev, [prefix]: [] }));
+            setStateOptions((prev) => ({ ...prev, [prefix]: [] }));
+        }
+        finally { setZipLoading((prev) => ({ ...prev, [prefix]: false })); }
+    };
+
+    const handleSelectWithOtro = (e: any, field: string, manualKey: string) => {
+        const val = e.target.value;
+        if (val === '__OTHER__') {
+            setManualMode((prev) => ({ ...prev, [manualKey]: true }));
+            setForm((prev) => ({ ...prev, [field]: '' }));
+        } else {
+            setForm((prev) => ({ ...prev, [field]: val }));
+        }
     };
 
     const handleSubmit = async (e: any) => {
@@ -97,7 +144,7 @@ export default function CreateShipmentPage() {
                                 <button className="btn btn-primary" onClick={() => window.open(api.getPdfUrl(success.id), '_blank')}>
                                     {Icons.printer} Imprimir etiqueta
                                 </button>
-                                <button className="btn btn-outline" onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/tracking/${success.trackingNumber}`); alert('Link copiado'); }}>
+                                <button className="btn btn-outline" onClick={() => { const base = import.meta.env.VITE_PUBLIC_URL || window.location.origin; navigator.clipboard.writeText(`${base}/tracking/${success.trackingNumber}`); toast('Link de tracking copiado'); }}>
                                     {Icons.clipboard} Copiar link de tracking
                                 </button>
                                 <button className="btn btn-outline" onClick={() => navigate(`/shipments/${success.id}`)}>
@@ -134,14 +181,32 @@ export default function CreateShipmentPage() {
                                 <div className="form-group"><label className="form-label">Email</label><input className="form-input" type="email" name="senderEmail" value={form.senderEmail} onChange={handleChange} /></div>
                             </div>
                             <div className="form-row">
-                                <div className="form-group"><label className="form-label">Calle *</label><input className="form-input" name="senderStreet" value={form.senderStreet} onChange={handleChange} required /></div>
-                                <div className="form-group"><label className="form-label">Numero *</label><input className="form-input" name="senderNumber" value={form.senderNumber} onChange={handleChange} required /></div>
-                                <div className="form-group"><label className="form-label">Colonia *</label><input className="form-input" name="senderNeighborhood" value={form.senderNeighborhood} onChange={handleChange} required /></div>
+                                <div className="form-group" style={{ maxWidth: 180 }}><label className="form-label">C.P. *</label><input className="form-input" name="senderZip" value={form.senderZip} onChange={handleChange} onBlur={() => lookupZip(form.senderZip, 'sender')} required placeholder="Ej: 29000" maxLength={5} /></div>
+                                <div className="form-group"><label className="form-label">Estado * {zipLoading.sender && <span style={{ fontSize: 11, color: 'var(--info)' }}>buscando...</span>}</label>
+                                    {manualMode.senderState || stateOptions.sender.length === 0 ? (
+                                        <input className="form-input" name="senderState" value={form.senderState} onChange={handleChange} required placeholder="Escribir estado" />
+                                    ) : (
+                                        <select className="form-select" value={form.senderState} onChange={(e) => handleSelectWithOtro(e, 'senderState', 'senderState')} required>
+                                            {stateOptions.sender.map((s, i) => <option key={i} value={s}>{s}</option>)}
+                                            <option value="__OTHER__">— Otro —</option>
+                                        </select>
+                                    )}
+                                </div>
+                                <div className="form-group"><label className="form-label">Ciudad *</label>
+                                    {manualMode.senderCity || cityOptions.sender.length === 0 ? (
+                                        <input className="form-input" name="senderCity" value={form.senderCity} onChange={handleChange} required placeholder="Escribir ciudad" />
+                                    ) : (
+                                        <select className="form-select" value={form.senderCity} onChange={(e) => handleSelectWithOtro(e, 'senderCity', 'senderCity')} required>
+                                            {cityOptions.sender.map((c, i) => <option key={i} value={c}>{c}</option>)}
+                                            <option value="__OTHER__">— Otro —</option>
+                                        </select>
+                                    )}
+                                </div>
                             </div>
                             <div className="form-row">
-                                <div className="form-group"><label className="form-label">Ciudad *</label><input className="form-input" name="senderCity" value={form.senderCity} onChange={handleChange} required /></div>
-                                <div className="form-group"><label className="form-label">Estado *</label><input className="form-input" name="senderState" value={form.senderState} onChange={handleChange} required /></div>
-                                <div className="form-group"><label className="form-label">C.P. *</label><input className="form-input" name="senderZip" value={form.senderZip} onChange={handleChange} required /></div>
+                                <div className="form-group"><label className="form-label">Colonia *</label><input className="form-input" name="senderNeighborhood" value={form.senderNeighborhood} onChange={handleChange} required /></div>
+                                <div className="form-group"><label className="form-label">Calle *</label><input className="form-input" name="senderStreet" value={form.senderStreet} onChange={handleChange} required /></div>
+                                <div className="form-group"><label className="form-label">No. Ext *</label><input className="form-input" name="senderNumber" value={form.senderNumber} onChange={handleChange} required /></div>
                             </div>
                             <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}><label className="form-label">Referencias</label><input className="form-input" name="senderReferences" value={form.senderReferences} onChange={handleChange} placeholder="Ej: Entre calle A y calle B, casa azul" /></div>
 
@@ -152,14 +217,32 @@ export default function CreateShipmentPage() {
                                 <div className="form-group"><label className="form-label">Email</label><input className="form-input" type="email" name="recipientEmail" value={form.recipientEmail} onChange={handleChange} /></div>
                             </div>
                             <div className="form-row">
-                                <div className="form-group"><label className="form-label">Calle *</label><input className="form-input" name="recipientStreet" value={form.recipientStreet} onChange={handleChange} required /></div>
-                                <div className="form-group"><label className="form-label">Numero *</label><input className="form-input" name="recipientNumber" value={form.recipientNumber} onChange={handleChange} required /></div>
-                                <div className="form-group"><label className="form-label">Colonia *</label><input className="form-input" name="recipientNeighborhood" value={form.recipientNeighborhood} onChange={handleChange} required /></div>
+                                <div className="form-group" style={{ maxWidth: 180 }}><label className="form-label">C.P. *</label><input className="form-input" name="recipientZip" value={form.recipientZip} onChange={handleChange} onBlur={() => lookupZip(form.recipientZip, 'recipient')} required placeholder="Ej: 29000" maxLength={5} /></div>
+                                <div className="form-group"><label className="form-label">Estado * {zipLoading.recipient && <span style={{ fontSize: 11, color: 'var(--info)' }}>buscando...</span>}</label>
+                                    {manualMode.recipientState || stateOptions.recipient.length === 0 ? (
+                                        <input className="form-input" name="recipientState" value={form.recipientState} onChange={handleChange} required placeholder="Escribir estado" />
+                                    ) : (
+                                        <select className="form-select" value={form.recipientState} onChange={(e) => handleSelectWithOtro(e, 'recipientState', 'recipientState')} required>
+                                            {stateOptions.recipient.map((s, i) => <option key={i} value={s}>{s}</option>)}
+                                            <option value="__OTHER__">— Otro —</option>
+                                        </select>
+                                    )}
+                                </div>
+                                <div className="form-group"><label className="form-label">Ciudad *</label>
+                                    {manualMode.recipientCity || cityOptions.recipient.length === 0 ? (
+                                        <input className="form-input" name="recipientCity" value={form.recipientCity} onChange={handleChange} required placeholder="Escribir ciudad" />
+                                    ) : (
+                                        <select className="form-select" value={form.recipientCity} onChange={(e) => handleSelectWithOtro(e, 'recipientCity', 'recipientCity')} required>
+                                            {cityOptions.recipient.map((c, i) => <option key={i} value={c}>{c}</option>)}
+                                            <option value="__OTHER__">— Otro —</option>
+                                        </select>
+                                    )}
+                                </div>
                             </div>
                             <div className="form-row">
-                                <div className="form-group"><label className="form-label">Ciudad *</label><input className="form-input" name="recipientCity" value={form.recipientCity} onChange={handleChange} required /></div>
-                                <div className="form-group"><label className="form-label">Estado *</label><input className="form-input" name="recipientState" value={form.recipientState} onChange={handleChange} required /></div>
-                                <div className="form-group"><label className="form-label">C.P. *</label><input className="form-input" name="recipientZip" value={form.recipientZip} onChange={handleChange} required /></div>
+                                <div className="form-group"><label className="form-label">Colonia *</label><input className="form-input" name="recipientNeighborhood" value={form.recipientNeighborhood} onChange={handleChange} required /></div>
+                                <div className="form-group"><label className="form-label">Calle *</label><input className="form-input" name="recipientStreet" value={form.recipientStreet} onChange={handleChange} required /></div>
+                                <div className="form-group"><label className="form-label">No. Ext *</label><input className="form-input" name="recipientNumber" value={form.recipientNumber} onChange={handleChange} required /></div>
                             </div>
                             <div className="form-group"><label className="form-label">Referencias</label><input className="form-input" name="recipientReferences" value={form.recipientReferences} onChange={handleChange} /></div>
                         </div>
