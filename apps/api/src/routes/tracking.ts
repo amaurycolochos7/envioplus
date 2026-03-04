@@ -1,8 +1,12 @@
 import { FastifyInstance } from 'fastify';
 import prisma from '../lib/prisma.js';
 
+const STATUS_ORDER = [
+    'CREATED', 'PICKED_UP', 'RECEIVED_AT_ORIGIN', 'IN_TRANSIT',
+    'AT_DESTINATION_BRANCH', 'OUT_FOR_DELIVERY', 'DELIVERED'
+];
+
 export async function trackingRoutes(app: FastifyInstance) {
-    // Rate limit más estricto para tracking público
     app.register(import('@fastify/rate-limit'), {
         max: 30,
         timeWindow: '1 minute',
@@ -19,10 +23,23 @@ export async function trackingRoutes(app: FastifyInstance) {
                 currentStatus: true,
                 packageType: true,
                 serviceType: true,
-                createdAt: true,
-                // Solo ciudad/estado (no dirección completa por seguridad)
+                weight: true,
+                dimensions: true,
+                declaredContent: true,
+                declaredValue: true,
+                insurance: true,
+                insuranceAmount: true,
+                totalAmount: true,
+                paymentMethod: true,
+                senderName: true,
+                senderPhone: true,
                 senderAddress: true,
+                recipientName: true,
+                recipientPhone: true,
                 recipientAddress: true,
+                createdAt: true,
+                originBranch: { select: { name: true } },
+                destinationBranch: { select: { name: true } },
                 events: {
                     orderBy: { createdAt: 'desc' },
                     select: {
@@ -40,20 +57,50 @@ export async function trackingRoutes(app: FastifyInstance) {
             return reply.status(404).send({ error: 'No se encontró el envío' });
         }
 
-        // Filtrar datos sensibles de las direcciones — solo ciudad/estado
-        const sanitize = (addr: any) => {
-            if (!addr) return null;
-            return { city: addr.city, state: addr.state };
-        };
+        // Calculate progress percentage based on status order
+        const statusIdx = STATUS_ORDER.indexOf(shipment.currentStatus);
+        const progressPercent = statusIdx >= 0
+            ? Math.round(((statusIdx + 1) / STATUS_ORDER.length) * 100)
+            : (shipment.currentStatus === 'CANCELLED' || shipment.currentStatus === 'INCIDENCE' ? 0 : 10);
+
+        // Origin: only city/state for privacy
+        const origin = shipment.senderAddress
+            ? { city: (shipment.senderAddress as any).city, state: (shipment.senderAddress as any).state }
+            : null;
+
+        // Destination: full address (shown in reference images)
+        const dest = shipment.recipientAddress as any;
+        const destination = dest ? {
+            street: dest.street,
+            number: dest.number,
+            neighborhood: dest.neighborhood,
+            city: dest.city,
+            state: dest.state,
+            zip: dest.zip,
+        } : null;
 
         return {
             trackingNumber: shipment.trackingNumber,
             status: shipment.currentStatus,
             packageType: shipment.packageType,
             serviceType: shipment.serviceType,
+            weight: shipment.weight,
+            dimensions: shipment.dimensions,
+            declaredContent: shipment.declaredContent,
+            declaredValue: shipment.declaredValue,
+            insurance: shipment.insurance,
+            insuranceAmount: shipment.insuranceAmount,
+            totalAmount: shipment.totalAmount,
+            paymentMethod: shipment.paymentMethod,
+            recipientName: shipment.recipientName,
+            recipientPhone: shipment.recipientPhone,
+            senderName: shipment.senderName,
             createdAt: shipment.createdAt,
-            origin: sanitize(shipment.senderAddress),
-            destination: sanitize(shipment.recipientAddress),
+            progressPercent,
+            origin,
+            destination,
+            originBranch: shipment.originBranch?.name || null,
+            destinationBranch: shipment.destinationBranch?.name || null,
             events: shipment.events,
         };
     });
