@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 /* ─── Solid SVG Icon Components (Industrial) ─── */
+// Año de fundación: los años de operación se calculan solos cada año.
+const FOUNDING_YEAR = 2008;
+
 const Icons = {
     package: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -610,6 +613,10 @@ export default function LandingPage() {
                                 Control total sobre cada envío con seguimiento en tiempo real.
                                 Red operativa diseñada para negocios que exigen resultados.
                             </p>
+                            <div className="footer-badge-year">
+                                <strong>Desde {FOUNDING_YEAR}</strong>
+                                <span>{new Date().getFullYear() - FOUNDING_YEAR} años moviendo México</span>
+                            </div>
                             <div className="footer-security">
                                 {Icons.shield}
                                 <span>Datos protegidos con encriptación SSL</span>
@@ -644,7 +651,7 @@ export default function LandingPage() {
                         </div>
                     </div>
                     <div className="footer-bottom">
-                        <a href="https://admin.envioplus.com.mx" style={{ color: 'inherit', textDecoration: 'none' }} title="Panel de administración">&copy; {new Date().getFullYear()} EnvioPlus. Todos los derechos reservados.</a>
+                        <a href="https://admin.envioplus.com.mx" style={{ color: 'inherit', textDecoration: 'none' }} title="Panel de administración">&copy; {FOUNDING_YEAR}&ndash;{new Date().getFullYear()} EnvioPlus. Todos los derechos reservados.</a>
                         <div className="footer-bottom-links">
                             <a href="#">Privacidad</a>
                             <a href="#">Términos</a>
