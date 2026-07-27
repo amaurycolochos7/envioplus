@@ -520,12 +520,21 @@ export default function TrackingPage() {
                                     <h3 className="trk-payment-amount">
                                         ${data.totalAmount?.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                                         <span className="trk-payment-status-label">
-                                            ({STATUS_LABELS[data.status] === 'Entregado' ? 'Pagado' : 'Envío Pendiente'})
+                                            ({data.paid
+                                                ? (STATUS_LABELS[data.status] === 'Entregado' ? 'Pagado — Envío entregado' : 'Pagado — Envío en proceso')
+                                                : 'Pago pendiente'})
                                         </span>
                                     </h3>
-                                    <p className="muted">Importe registrado para completar el envío.</p>
+                                    <p className="muted">
+                                        {data.paid
+                                            ? 'Pago confirmado. No se requiere ningún cobro adicional.'
+                                            : 'Importe registrado para completar el envío.'}
+                                    </p>
                                 </div>
                                 <div className="trk-payment-actions">
+                                    <span className={`trk-payment-flag ${data.paid ? 'is-paid' : 'is-unpaid'}`}>
+                                        {data.paid ? 'PAGADO' : 'NO PAGADO'}
+                                    </span>
                                     <span className="trk-payment-method">
                                         {PAYMENT_LABELS[data.paymentMethod] || data.paymentMethod}
                                     </span>

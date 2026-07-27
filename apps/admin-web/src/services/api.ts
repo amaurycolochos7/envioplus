@@ -64,6 +64,8 @@ export const api = {
         request(`/shipments/${id}`),
     updateShipment: (id: string, data: any) =>
         request(`/shipments/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    setShipmentPaid: (id: string, paid: boolean) =>
+        request(`/shipments/${id}/payment`, { method: 'PATCH', body: JSON.stringify({ paid }) }),
     cancelShipment: (id: string, reason: string) =>
         request(`/shipments/${id}/cancel`, { method: 'POST', body: JSON.stringify({ reason }) }),
 

@@ -133,6 +133,8 @@ model Shipment {
   subtotal        Float         @default(0)
   extras          Float         @default(0)
   totalAmount     Float         @default(0) @map("total_amount")
+  paid            Boolean       @default(false)
+  paidAt          DateTime?     @map("paid_at")
 
   // Relaciones
   originBranchId      String?  @map("origin_branch_id")

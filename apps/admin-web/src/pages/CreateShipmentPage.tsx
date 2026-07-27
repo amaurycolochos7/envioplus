@@ -40,7 +40,7 @@ export default function CreateShipmentPage() {
         declaredContent: '', declaredValue: '',
         serviceType: 'STANDARD', insurance: false, insuranceAmount: '',
         pickupRequested: false,
-        paymentMethod: 'CASH', subtotal: '', extras: '', totalAmount: '',
+        paymentMethod: 'CASH', subtotal: '', extras: '', totalAmount: '', paid: false,
         originBranchId: '',
     });
 
@@ -136,6 +136,7 @@ export default function CreateShipmentPage() {
                 subtotal: form.subtotal ? parseFloat(form.subtotal) : 0,
                 extras: form.extras ? parseFloat(form.extras) : 0,
                 totalAmount: form.totalAmount ? parseFloat(form.totalAmount) : 0,
+                paid: form.paid,
                 originBranchId: form.originBranchId || undefined,
             };
             const result = await api.createShipment(payload);
@@ -332,6 +333,12 @@ export default function CreateShipmentPage() {
                                 <div className="form-group"><label className="form-label">Subtotal</label><input className="form-input" type="number" name="subtotal" value={form.subtotal} onChange={handleChange} /></div>
                                 <div className="form-group"><label className="form-label">Extras</label><input className="form-input" type="number" name="extras" value={form.extras} onChange={handleChange} /></div>
                                 <div className="form-group"><label className="form-label">Total</label><input className="form-input" type="number" name="totalAmount" value={form.totalAmount} onChange={handleChange} /></div>
+                            </div>
+                            <div className="form-group" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                <input type="checkbox" name="paid" checked={form.paid} onChange={handleChange} id="paid" />
+                                <label htmlFor="paid" className="form-label" style={{ margin: 0 }}>
+                                    Pago recibido <span style={{ color: 'var(--muted-text)', fontWeight: 400 }}>— si no se marca, el rastreo publico mostrara NO PAGADO</span>
+                                </label>
                             </div>
                         </div>
                     </div>

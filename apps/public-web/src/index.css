@@ -3166,6 +3166,27 @@ textarea {
     gap: var(--space-3);
 }
 
+.trk-payment-flag {
+    padding: 8px 18px;
+    font-size: var(--font-size-xs);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+.trk-payment-flag.is-unpaid {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.trk-payment-flag.is-paid {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
 .trk-payment-method {
     padding: 8px 18px;
     background: #fef3c7;
@@ -3820,6 +3841,7 @@ textarea {
     .trk-payment-actions {
         width: 100%;
         justify-content: flex-start;
+        flex-wrap: wrap;
     }
 
     .trk-guide-row {

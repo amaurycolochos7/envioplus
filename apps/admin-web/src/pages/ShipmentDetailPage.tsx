@@ -27,6 +27,9 @@ const STATUS_ORDER = [
     'AT_DESTINATION_BRANCH', 'OUT_FOR_DELIVERY', 'DELIVERED',
 ];
 
+const PAID_BADGE_STYLE = { background: '#dcfce7', color: '#166534', border: '1px solid #86efac' };
+const UNPAID_BADGE_STYLE = { background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5' };
+
 const Icons = {
     arrowLeft: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>,
     printer: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}><polyline points="6 9 6 2 18 2 18 9" /><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" /><rect x="6" y="14" width="12" height="8" /></svg>,
@@ -50,6 +53,16 @@ export default function ShipmentDetailPage() {
     const [newStatus, setNewStatus] = useState('');
     const [notes, setNotes] = useState('');
     const [actionLoading, setActionLoading] = useState(false);
+    // Estado de pago editable dentro del modal de "Actualizar estado"
+    const [paidDraft, setPaidDraft] = useState(false);
+
+    const isPaid = !!data?.paid;
+    const paidChanged = paidDraft !== isPaid;
+
+    const openStatusModal = () => {
+        setPaidDraft(isPaid);
+        setShowStatusModal(true);
+    };
 
     const load = () => {
         setLoading(true);
@@ -59,10 +72,11 @@ export default function ShipmentDetailPage() {
     useEffect(() => { load(); }, [id]);
 
     const handleUpdateStatus = async () => {
-        if (!newStatus) return;
+        if (!newStatus && !paidChanged) return;
         setActionLoading(true);
         try {
-            await api.addEvent(id!, { status: newStatus, notes });
+            if (paidChanged) await api.setShipmentPaid(id!, paidDraft);
+            if (newStatus) await api.addEvent(id!, { status: newStatus, notes });
             setShowStatusModal(false);
             setNewStatus('');
             setNotes('');
@@ -169,10 +183,11 @@ export default function ShipmentDetailPage() {
                     <button className="btn btn-sm btn-outline" onClick={() => navigate('/shipments')}>{Icons.arrowLeft}</button>
                     <h1 className="topbar-title">{data.trackingNumber}</h1>
                     <span className={`badge ${STATUS_BADGE[data.status] || 'badge-registered'}`}>{STATUS_LABELS[data.status] || data.status}</span>
+                    <span className="badge" style={isPaid ? PAID_BADGE_STYLE : UNPAID_BADGE_STYLE}>{isPaid ? 'PAGADO' : 'NO PAGADO'}</span>
                 </div>
                 <div className="topbar-right" style={{ gap: 8 }}>
                     <button className="btn btn-sm btn-outline" onClick={handleDownload}>{Icons.download} Descargar guía</button>
-                    <button className="btn btn-sm btn-secondary" onClick={() => { setShowStatusModal(true); }}>{Icons.refresh} Actualizar</button>
+                    <button className="btn btn-sm btn-secondary" onClick={openStatusModal}>{Icons.refresh} Actualizar</button>
                     <button className="btn btn-sm btn-danger" onClick={() => { setShowIncidentModal(true); }}>{Icons.alertTriangle} Incidencia</button>
                     {data.status !== 'CANCELLED' && data.status !== 'DELIVERED' && (
                         <button className="btn btn-sm btn-danger" onClick={handleCancel}>{Icons.xCircle} Cancelar</button>
@@ -242,6 +257,13 @@ export default function ShipmentDetailPage() {
                                 <div className="detail-item"><span className="detail-label">Peso</span><span className="detail-value">{data.weight ? `${data.weight} kg` : '—'}</span></div>
                                 <div className="detail-item"><span className="detail-label">Servicio</span><span className="detail-value">{data.serviceType}</span></div>
                                 <div className="detail-item"><span className="detail-label">Total</span><span className="detail-value" style={{ fontWeight: 700, color: 'var(--primary)' }}>${data.totalAmount || 0}</span></div>
+                                <div className="detail-item">
+                                    <span className="detail-label">Pago</span>
+                                    <span className="detail-value">
+                                        <span className="badge" style={isPaid ? PAID_BADGE_STYLE : UNPAID_BADGE_STYLE}>{isPaid ? 'PAGADO' : 'NO PAGADO'}</span>
+                                        {isPaid && data.paidAt && <span className="text-muted text-sm" style={{ marginLeft: 8 }}>{formatDate(data.paidAt)}</span>}
+                                    </span>
+                                </div>
                                 {data.declaredContent && <div className="detail-item"><span className="detail-label">Contenido</span><span className="detail-value">{data.declaredContent}</span></div>}
                                 {data.insurance && <div className="detail-item"><span className="detail-label">Seguro</span><span className="detail-value badge-cta" style={{ padding: '2px 8px', borderRadius: 'var(--radius-full)', fontSize: 12 }}>Asegurado</span></div>}
                             </div>
@@ -294,13 +316,40 @@ export default function ShipmentDetailPage() {
                                 ))}
                             </select>
                         </div>
+                        <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
+                            <label className="form-label">Estado de pago</label>
+                            <div style={{ display: 'flex', gap: 8 }}>
+                                <button
+                                    type="button"
+                                    className={`btn ${!paidDraft ? 'btn-danger' : 'btn-outline'}`}
+                                    style={{ flex: 1 }}
+                                    onClick={() => setPaidDraft(false)}
+                                >
+                                    NO PAGADO
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`btn ${paidDraft ? 'btn-primary' : 'btn-outline'}`}
+                                    style={{ flex: 1 }}
+                                    onClick={() => setPaidDraft(true)}
+                                >
+                                    PAGADO
+                                </button>
+                            </div>
+                            <span className="text-muted text-sm" style={{ display: 'block', marginTop: 6 }}>
+                                {paidDraft
+                                    ? 'El rastreo publico mostrara "Pagado — envio en proceso".'
+                                    : 'El rastreo publico mostrara "NO PAGADO".'}
+                                {paidChanged && ' (se guarda al presionar Actualizar)'}
+                            </span>
+                        </div>
                         <div className="form-group">
                             <label className="form-label">Notas (opcional)</label>
                             <textarea className="form-textarea" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Observaciones..." />
                         </div>
                         <div className="modal-actions">
                             <button className="btn btn-outline" onClick={() => setShowStatusModal(false)}>Cancelar</button>
-                            <button className="btn btn-primary" onClick={handleUpdateStatus} disabled={!newStatus || actionLoading}>
+                            <button className="btn btn-primary" onClick={handleUpdateStatus} disabled={(!newStatus && !paidChanged) || actionLoading}>
                                 {actionLoading ? 'Guardando...' : 'Actualizar'}
                             </button>
                         </div>

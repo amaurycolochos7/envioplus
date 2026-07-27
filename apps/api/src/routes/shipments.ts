@@ -40,6 +40,7 @@ const createShipmentSchema = z.object({
     subtotal: z.number().min(0).default(0),
     extras: z.number().min(0).default(0),
     totalAmount: z.number().min(0).default(0),
+    paid: z.boolean().default(false),
     originBranchId: z.string().uuid().optional(),
     destinationBranchId: z.string().uuid().optional(),
 });
@@ -70,6 +71,7 @@ export async function shipmentRoutes(app: FastifyInstance) {
                     senderAddress: body.senderAddress as any,
                     recipientAddress: body.recipientAddress as any,
                     dimensions: body.dimensions as any,
+                    paidAt: body.paid ? new Date() : null,
                     createdByUserId: user.id,
                 },
             });
@@ -191,6 +193,25 @@ export async function shipmentRoutes(app: FastifyInstance) {
         });
 
         await createAuditLog(user.id, 'shipment', id, 'update', existing, updated);
+
+        return updated;
+    });
+
+    // ─── PATCH /shipments/:id/payment (pagado / no pagado) ──
+    app.patch('/:id/payment', async (request, reply) => {
+        const user = request.user as any;
+        const { id } = request.params as any;
+        const { paid } = z.object({ paid: z.boolean() }).parse(request.body);
+
+        const existing = await prisma.shipment.findUnique({ where: { id } });
+        if (!existing) return reply.status(404).send({ error: 'Guía no encontrada' });
+
+        const updated = await prisma.shipment.update({
+            where: { id },
+            data: { paid, paidAt: paid ? new Date() : null },
+        });
+
+        await createAuditLog(user.id, 'shipment', id, paid ? 'mark_paid' : 'mark_unpaid', existing, updated);
 
         return updated;
     });
