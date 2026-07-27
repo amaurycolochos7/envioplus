@@ -81,7 +81,7 @@ export default function ShipmentDetailPage() {
             setNewStatus('');
             setNotes('');
             load();
-        } catch (err: any) { alert(err.message); }
+        } catch (err: any) { alert(`No se pudo actualizar: ${err.message}`); }
         finally { setActionLoading(false); }
     };
 
@@ -286,8 +286,9 @@ export default function ShipmentDetailPage() {
                                             <div className="timeline-info">
                                                 <strong>{STATUS_LABELS[ev.status] || ev.status}</strong>
                                                 <div className="timeline-meta">
-                                                    {formatDate(ev.timestamp)}
-                                                    {ev.branchName && ` — ${ev.branchName}`}
+                                                    {formatDate(ev.createdAt || ev.timestamp)}
+                                                    {ev.branch?.name && ` — ${ev.branch.name}`}
+                                                    {ev.createdBy?.name && ` · ${ev.createdBy.name}`}
                                                 </div>
                                                 {ev.notes && <div className="timeline-meta" style={{ fontStyle: 'italic' }}>{ev.notes}</div>}
                                             </div>

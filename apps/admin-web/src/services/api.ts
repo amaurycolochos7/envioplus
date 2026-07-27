@@ -46,6 +46,13 @@ async function request(path: string, options: RequestInit = {}) {
     return res.json();
 }
 
+// La API expone el estado como `currentStatus`; las pantallas usan `status`.
+// Se normaliza aqui para que ambos nombres existan en el objeto.
+function normalizeShipment(s: any) {
+    if (!s || typeof s !== 'object') return s;
+    return { ...s, status: s.currentStatus ?? s.status };
+}
+
 export const api = {
     // Auth
     login: (email: string, password: string) =>
@@ -59,9 +66,12 @@ export const api = {
     createShipment: (data: any) =>
         request('/shipments', { method: 'POST', body: JSON.stringify(data) }),
     getShipments: (params: string) =>
-        request(`/shipments?${params}`),
+        request(`/shipments?${params}`).then((res) => ({
+            ...res,
+            data: (res.data || []).map(normalizeShipment),
+        })),
     getShipment: (id: string) =>
-        request(`/shipments/${id}`),
+        request(`/shipments/${id}`).then(normalizeShipment),
     updateShipment: (id: string, data: any) =>
         request(`/shipments/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
     setShipmentPaid: (id: string, paid: boolean) =>
