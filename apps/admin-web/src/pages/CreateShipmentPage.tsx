@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import { useToast } from '../components/Toast';
+import { DEFAULT_SENDER, loadSender, saveSender, clearSender, type SenderData } from '../config/company';
 
 const Icons = {
     arrowLeft: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>,
@@ -31,9 +32,7 @@ export default function CreateShipmentPage() {
     const [manualMode, setManualMode] = useState<{ senderCity?: boolean; senderState?: boolean; recipientCity?: boolean; recipientState?: boolean }>({});
 
     const [form, setForm] = useState({
-        senderName: '', senderPhone: '', senderEmail: '',
-        senderStreet: '', senderNumber: '', senderNeighborhood: '',
-        senderCity: '', senderState: '', senderZip: '', senderReferences: '',
+        ...loadSender(),
         recipientName: '', recipientPhone: '', recipientEmail: '',
         recipientStreet: '', recipientNumber: '', recipientNeighborhood: '',
         recipientCity: '', recipientState: '', recipientZip: '', recipientReferences: '',
@@ -48,6 +47,23 @@ export default function CreateShipmentPage() {
     useEffect(() => {
         api.getBranches().then(setBranches).catch(console.error);
     }, []);
+
+    const applySender = (sender: SenderData) => {
+        setManualMode((prev) => ({ ...prev, senderCity: false, senderState: false }));
+        setCityOptions((prev) => ({ ...prev, sender: [] }));
+        setStateOptions((prev) => ({ ...prev, sender: [] }));
+        setForm((prev) => ({ ...prev, ...sender }));
+    };
+
+    const restoreDefaultSender = () => {
+        clearSender();
+        applySender(DEFAULT_SENDER);
+        toast('Remitente restablecido a los datos de la empresa');
+    };
+
+    const emptySender = () => {
+        applySender(Object.fromEntries(Object.keys(DEFAULT_SENDER).map((k) => [k, ''])) as SenderData);
+    };
 
     const handleChange = (e: any) => {
         const { name, value, type, checked } = e.target;
@@ -123,6 +139,13 @@ export default function CreateShipmentPage() {
                 originBranchId: form.originBranchId || undefined,
             };
             const result = await api.createShipment(payload);
+            // Recordar el remitente usado para precargarlo en la siguiente guia
+            saveSender({
+                senderName: form.senderName, senderPhone: form.senderPhone, senderEmail: form.senderEmail,
+                senderStreet: form.senderStreet, senderNumber: form.senderNumber, senderNeighborhood: form.senderNeighborhood,
+                senderCity: form.senderCity, senderState: form.senderState, senderZip: form.senderZip,
+                senderReferences: form.senderReferences,
+            });
             setSuccess(result);
         } catch (err: any) { setError(err.message); }
         finally { setLoading(false); }
@@ -174,7 +197,13 @@ export default function CreateShipmentPage() {
                 <form onSubmit={handleSubmit}>
                     <div className="card" style={{ marginBottom: 20 }}>
                         <div className="card-body">
-                            <div className="form-section-title">{Icons.send} Remitente</div>
+                            <div className="form-section-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>{Icons.send} Remitente</span>
+                                <span style={{ display: 'flex', gap: 8 }}>
+                                    <button type="button" className="btn btn-sm btn-outline" onClick={restoreDefaultSender}>Restablecer empresa</button>
+                                    <button type="button" className="btn btn-sm btn-outline" onClick={emptySender}>Limpiar</button>
+                                </span>
+                            </div>
                             <div className="form-row">
                                 <div className="form-group"><label className="form-label">Nombre *</label><input className="form-input" name="senderName" value={form.senderName} onChange={handleChange} required /></div>
                                 <div className="form-group"><label className="form-label">Telefono *</label><input className="form-input" name="senderPhone" value={form.senderPhone} onChange={handleChange} required /></div>

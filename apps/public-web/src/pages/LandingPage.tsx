@@ -636,10 +636,10 @@ export default function LandingPage() {
                         <div className="footer-col">
                             <h4>Contacto</h4>
                             <ul className="footer-links">
-                                <li><a href="#">contacto@envioplus.com.mx</a></li>
-                                <li><a href="#">+52 (XXX) XXX-XXXX</a></li>
+                                <li><a href="mailto:contacto@envioplus.com.mx">contacto@envioplus.com.mx</a></li>
+                                <li><a href="tel:+525565872156">+52 55 6587 2156</a></li>
                                 <li><a href="#">Av. Principal #123, Col. Centro</a></li>
-                                <li><a href="#">Ciudad, Estado, México</a></li>
+                                <li><a href="#">Ciudad de México, CDMX, México</a></li>
                             </ul>
                         </div>
                     </div>

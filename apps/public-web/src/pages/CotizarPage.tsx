@@ -348,7 +348,7 @@ export default function CotizarPage() {
                                     className="btn btn-primary btn-lg"
                                     onClick={() => {
                                         const msg = `Hola, quiero enviar un ${PACKAGE_TYPES.find(p => p.id === packageType)?.label} de ${result.weight}kg de ${origin} a ${destination}. La cotización fue $${result.price} MXN (${result.service}). ¿Cómo procedo?`;
-                                        window.open(`https://wa.me/528110000000?text=${encodeURIComponent(msg)}`, '_blank');
+                                        window.open(`https://wa.me/525565872156?text=${encodeURIComponent(msg)}`, '_blank');
                                     }}
                                 >
                                     Solicitar envio por WhatsApp
