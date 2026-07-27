@@ -1691,6 +1691,17 @@ textarea {
     color: white;
 }
 
+.footer-year-side {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.footer-year-side .footer-badge-year {
+    margin-bottom: 0;
+}
+
 .footer-badge-year {
     display: inline-flex;
     align-items: center;

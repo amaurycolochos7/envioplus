@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SiteFooterYear } from '../components/SiteFooterYear';
 
 /* ─── SVG Icons ─── */
 const PkgIcons = {
@@ -366,6 +367,7 @@ export default function CotizarPage() {
                     </div>
                 )}
             </div>
+            <SiteFooterYear />
         </div>
     );
 }

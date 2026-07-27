@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { SiteFooterYear } from '../components/SiteFooterYear';
 
 const API = '/api';
 
@@ -719,17 +720,7 @@ export default function TrackingPage() {
             </div>
 
             {/* ─── FOOTER ─── */}
-            <footer className="footer">
-                <div className="container">
-                    <div className="footer-bottom" style={{ paddingTop: 0, borderTop: 'none' }}>
-                        <span>&copy; {new Date().getFullYear()} EnvioPlus. Todos los derechos reservados.</span>
-                        <div className="footer-security">
-                            {Icons.shield}
-                            <span>Datos protegidos con encriptación SSL</span>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <SiteFooterYear />
         </>
     );
 }
