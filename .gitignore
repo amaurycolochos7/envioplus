@@ -22,3 +22,6 @@ app_columns.txt
 details_report.txt
 fix_paths.sql
 clean_map.py
+
+# TS build artifacts
+*.tsbuildinfo
