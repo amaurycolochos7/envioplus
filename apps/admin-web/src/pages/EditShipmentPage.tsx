@@ -62,7 +62,21 @@ export default function EditShipmentPage() {
 
         setSaving(true);
         try {
-            const payload: any = { ...formToPayload(form), currentStatus: status };
+            // En edicion, un campo vaciado debe borrarse (null), no omitirse
+            const base = formToPayload(form);
+            const payload: any = {
+                ...base,
+                currentStatus: status,
+                senderEmail: base.senderEmail ?? null,
+                recipientEmail: base.recipientEmail ?? null,
+                weight: base.weight ?? null,
+                dimensions: base.dimensions ?? null,
+                declaredContent: base.declaredContent ?? null,
+                declaredValue: base.declaredValue ?? null,
+                insuranceAmount: base.insuranceAmount ?? null,
+                originBranchId: base.originBranchId ?? null,
+                destinationBranchId: base.destinationBranchId ?? null,
+            };
             // Solo se manda el numero de guia si realmente cambio
             if (tracking !== originalTracking) payload.trackingNumber = tracking;
 

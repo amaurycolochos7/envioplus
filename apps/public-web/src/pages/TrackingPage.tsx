@@ -185,6 +185,16 @@ export default function TrackingPage() {
         }
     }, [trackingNumber]);
 
+    // Cerrar los modales con Escape
+    useEffect(() => {
+        if (!payOpen && !helpOpen) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') { setPayOpen(false); setHelpOpen(false); }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [payOpen, helpOpen]);
+
     const fetchTracking = async (tn: string) => {
         setLoading(true);
         setError('');
@@ -218,7 +228,6 @@ export default function TrackingPage() {
         setPayOpen(true);
         setPayError('');
         setCopiedKey('');
-        if (payInfo?.bankAccount) return; // ya se cargaron
         setPayLoading(true);
         try {
             const res = await fetch(`${API}/tracking/${data.trackingNumber}/payment-info`);
