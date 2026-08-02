@@ -27,22 +27,22 @@ const templateSchema = z.object({
 });
 
 // Los números se guardan sin espacios ni guiones; el string vacío equivale a "sin dato"
-const digits = (max: number, min: number) =>
+const digits = (min: number, max: number, message: string) =>
     z.preprocess(
         (v) => {
             if (typeof v !== 'string') return v;
             const clean = v.replace(/[\s-]/g, '');
             return clean === '' ? undefined : clean;
         },
-        z.string().regex(new RegExp(`^\\d{${min},${max}}$`), 'Solo dígitos').optional(),
+        z.string().regex(new RegExp(`^\\d{${min},${max}}$`), message).optional(),
     );
 
 const bankAccountSchema = z.object({
     bankName: z.string().trim().min(2, 'Nombre del banco requerido').max(60),
     accountHolder: z.string().trim().min(2, 'Beneficiario requerido').max(80),
-    clabe: digits(18, 18),
-    cardNumber: digits(19, 15),
-    accountNumber: digits(20, 6),
+    clabe: digits(18, 18, 'La CLABE debe tener exactamente 18 dígitos'),
+    cardNumber: digits(15, 19, 'La tarjeta debe tener entre 15 y 19 dígitos'),
+    accountNumber: digits(6, 20, 'La cuenta debe tener entre 6 y 20 dígitos'),
     instructions: z.string().trim().max(300).optional(),
 }).refine(
     (d) => !!(d.clabe || d.cardNumber || d.accountNumber),
