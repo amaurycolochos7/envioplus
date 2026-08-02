@@ -45,12 +45,45 @@ const createShipmentSchema = z.object({
     destinationBranchId: z.string().uuid().optional(),
 });
 
+const SHIPMENT_STATUSES = [
+    'CREATED', 'PICKED_UP', 'RECEIVED_AT_ORIGIN', 'IN_TRANSIT',
+    'AT_DESTINATION_BRANCH', 'OUT_FOR_DELIVERY', 'DELIVERED',
+    'INCIDENCE', 'CANCELLED',
+] as const;
+
+// Edición completa de la guía. Todo es opcional: solo se aplica lo que llega.
+// No se exponen identificadores internos ni fechas de auditoría.
 const updateShipmentSchema = z.object({
-    recipientPhone: z.string().optional(),
-    recipientEmail: z.string().email().optional(),
-    recipientAddress: addressSchema.partial().optional(),
-    declaredContent: z.string().optional(),
-    notes: z.string().optional(),
+    trackingNumber: z.string().trim().min(6).max(30).regex(/^[A-Za-z0-9-]+$/, 'Formato de guía inválido').optional(),
+    senderName: z.string().min(1).optional(),
+    senderPhone: z.string().min(8).optional(),
+    senderEmail: z.string().email().nullish(),
+    senderAddress: addressSchema.optional(),
+    recipientName: z.string().min(1).optional(),
+    recipientPhone: z.string().min(8).optional(),
+    recipientEmail: z.string().email().nullish(),
+    recipientAddress: addressSchema.optional(),
+    packageType: z.enum(['ENVELOPE', 'BOX', 'PACKAGE', 'OTHER']).optional(),
+    weight: z.number().positive().nullish(),
+    dimensions: z.object({
+        length: z.number().positive(),
+        width: z.number().positive(),
+        height: z.number().positive(),
+    }).nullish(),
+    declaredContent: z.string().nullish(),
+    declaredValue: z.number().min(0).nullish(),
+    serviceType: z.enum(['STANDARD', 'EXPRESS']).optional(),
+    insurance: z.boolean().optional(),
+    insuranceAmount: z.number().min(0).nullish(),
+    pickupRequested: z.boolean().optional(),
+    paymentMethod: z.enum(['CASH', 'TRANSFER', 'CARD', 'OTHER']).optional(),
+    subtotal: z.number().min(0).optional(),
+    extras: z.number().min(0).optional(),
+    totalAmount: z.number().min(0).optional(),
+    paid: z.boolean().optional(),
+    currentStatus: z.enum(SHIPMENT_STATUSES).optional(),
+    originBranchId: z.string().uuid().nullish(),
+    destinationBranchId: z.string().uuid().nullish(),
 });
 
 export async function shipmentRoutes(app: FastifyInstance) {
@@ -175,21 +208,61 @@ export async function shipmentRoutes(app: FastifyInstance) {
         return shipment;
     });
 
-    // ─── PATCH /shipments/:id (edición limitada) ──────
+    // ─── PATCH /shipments/:id (edición completa) ──────
     app.patch('/:id', async (request, reply) => {
         const user = request.user as any;
+
+        // Solo ADMIN y SUPERVISOR pueden editar guías
+        if (!['ADMIN', 'SUPERVISOR'].includes(user.role)) {
+            return reply.status(403).send({ error: 'Sin permisos para editar guías' });
+        }
+
         const { id } = request.params as any;
         const body = updateShipmentSchema.parse(request.body);
 
         const existing = await prisma.shipment.findUnique({ where: { id } });
         if (!existing) return reply.status(404).send({ error: 'Guía no encontrada' });
-        if (existing.currentStatus === 'CANCELLED') {
+        if (existing.currentStatus === 'CANCELLED' && body.currentStatus !== 'CANCELLED') {
             return reply.status(400).send({ error: 'No se puede editar una guía cancelada' });
         }
 
-        const updated = await prisma.shipment.update({
-            where: { id },
-            data: body as any,
+        const data: any = { ...body };
+
+        // Número de guía: se normaliza y se valida que no exista otro igual
+        if (body.trackingNumber) {
+            const tracking = body.trackingNumber.toUpperCase();
+            if (tracking !== existing.trackingNumber) {
+                const duplicated = await prisma.shipment.findUnique({ where: { trackingNumber: tracking } });
+                if (duplicated) {
+                    return reply.status(409).send({ error: 'Ya existe otra guía con ese número' });
+                }
+            }
+            data.trackingNumber = tracking;
+        }
+
+        // El estado de pago arrastra su fecha
+        if (body.paid !== undefined && body.paid !== existing.paid) {
+            data.paidAt = body.paid ? new Date() : null;
+        }
+
+        const statusChanged = !!body.currentStatus && body.currentStatus !== existing.currentStatus;
+
+        const updated = await prisma.$transaction(async (tx) => {
+            const result = await tx.shipment.update({ where: { id }, data });
+
+            // El cambio de estado se registra en el historial como cualquier otro evento
+            if (statusChanged) {
+                await tx.shipmentEvent.create({
+                    data: {
+                        shipmentId: id,
+                        status: body.currentStatus!,
+                        notes: 'Estado actualizado desde la edición de la guía',
+                        createdById: user.id,
+                    },
+                });
+            }
+
+            return result;
         });
 
         await createAuditLog(user.id, 'shipment', id, 'update', existing, updated);

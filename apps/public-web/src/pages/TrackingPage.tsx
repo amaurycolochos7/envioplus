@@ -79,6 +79,12 @@ const Icons = {
             <line x1="12" y1="8" x2="12.01" y2="8" />
         </svg>
     ),
+    creditCard: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+            <line x1="1" y1="10" x2="23" y2="10" />
+        </svg>
+    ),
     user: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
@@ -159,6 +165,12 @@ export default function TrackingPage() {
     const [copied, setCopied] = useState(false);
     const [historyOpen, setHistoryOpen] = useState(false);
     const [helpOpen, setHelpOpen] = useState(false);
+    // Modal de datos para transferir
+    const [payOpen, setPayOpen] = useState(false);
+    const [payInfo, setPayInfo] = useState<any>(null);
+    const [payLoading, setPayLoading] = useState(false);
+    const [payError, setPayError] = useState('');
+    const [copiedKey, setCopiedKey] = useState('');
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20);
@@ -200,6 +212,65 @@ export default function TrackingPage() {
             setTimeout(() => setCopied(false), 2000);
         }
     };
+
+    /* ─── Datos para transferir ─── */
+    const openPayModal = async () => {
+        setPayOpen(true);
+        setPayError('');
+        setCopiedKey('');
+        if (payInfo?.bankAccount) return; // ya se cargaron
+        setPayLoading(true);
+        try {
+            const res = await fetch(`${API}/tracking/${data.trackingNumber}/payment-info`);
+            if (!res.ok) {
+                const body = await res.json().catch(() => ({}));
+                throw new Error(body.error || 'No fue posible obtener los datos bancarios.');
+            }
+            setPayInfo(await res.json());
+        } catch (err: any) {
+            setPayError(err.message);
+        } finally {
+            setPayLoading(false);
+        }
+    };
+
+    const closePayModal = () => { setPayOpen(false); setCopiedKey(''); };
+
+    const copyValue = async (key: string, value: string) => {
+        try {
+            await navigator.clipboard.writeText(value);
+        } catch {
+            // Navegadores sin acceso directo al portapapeles
+            const el = document.createElement('textarea');
+            el.value = value;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+        }
+        setCopiedKey(key);
+        setTimeout(() => setCopiedKey((k) => (k === key ? '' : k)), 2000);
+    };
+
+    /* Agrupa de 4 en 4 para que la CLABE/tarjeta se lean facil */
+    const groupDigits = (v: string) => v.replace(/(.{4})/g, '$1 ').trim();
+
+    const bank = payInfo?.bankAccount;
+    const payRows: { key: string; label: string; display: string; copy?: string; mono?: boolean }[] = bank
+        ? [
+            { key: 'bank', label: 'Banco', display: bank.bankName },
+            { key: 'holder', label: 'Beneficiario', display: bank.accountHolder, copy: bank.accountHolder },
+            ...(bank.clabe ? [{ key: 'clabe', label: 'CLABE', display: groupDigits(bank.clabe), copy: bank.clabe, mono: true }] : []),
+            ...(bank.cardNumber ? [{ key: 'card', label: 'Tarjeta', display: groupDigits(bank.cardNumber), copy: bank.cardNumber, mono: true }] : []),
+            ...(bank.accountNumber ? [{ key: 'account', label: 'Cuenta', display: groupDigits(bank.accountNumber), copy: bank.accountNumber, mono: true }] : []),
+            {
+                key: 'amount', label: 'Monto a transferir',
+                display: `$${Number(payInfo.amount || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN`,
+                copy: Number(payInfo.amount || 0).toFixed(2), mono: true,
+            },
+            { key: 'reference', label: 'Referencia (tu guía)', display: payInfo.reference, copy: payInfo.reference, mono: true },
+        ]
+        : [];
 
     const handleRefresh = () => {
         if (data?.trackingNumber) {
@@ -515,36 +586,102 @@ export default function TrackingPage() {
 
                         {/* ═══ PAYMENT SECTION ═══ */}
                         <div className="trk-card trk-payment-card">
-                            <h4 className="trk-section-title-plain">PAGO</h4>
+                            <div className="trk-payment-head">
+                                <h4 className="trk-section-title-plain">PAGO</h4>
+                                <span className={`trk-payment-flag ${data.paid ? 'is-paid' : 'is-unpaid'}`}>
+                                    {data.paid ? 'PAGADO' : 'PENDIENTE DE PAGO'}
+                                </span>
+                            </div>
                             <div className="trk-payment-row">
-                                <div>
+                                <div className="trk-payment-main">
+                                    <span className="trk-payment-label">Monto total de la guía</span>
                                     <h3 className="trk-payment-amount">
                                         ${data.totalAmount?.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-                                        <span className="trk-payment-status-label">
-                                            ({data.paid
-                                                ? (STATUS_LABELS[data.status] === 'Entregado' ? 'Pagado — Envío entregado' : 'Pagado — Envío en proceso')
-                                                : 'Pago pendiente'})
-                                        </span>
                                     </h3>
-                                    <p className="muted">
+                                    <p className="muted trk-payment-help">
                                         {data.paid
-                                            ? 'Pago confirmado. No se requiere ningún cobro adicional.'
-                                            : 'Importe registrado para completar el envío.'}
+                                            ? 'Tu pago está confirmado. No tienes que realizar ningún depósito adicional por esta guía.'
+                                            : data.paymentInfoAvailable
+                                                ? 'Realiza la transferencia por el monto total y usa tu número de guía como referencia.'
+                                                : 'Comunícate con nosotros para recibir las indicaciones de pago de esta guía.'}
                                     </p>
                                 </div>
                                 <div className="trk-payment-actions">
-                                    <span className={`trk-payment-flag ${data.paid ? 'is-paid' : 'is-unpaid'}`}>
-                                        {data.paid ? 'PAGADO' : 'NO PAGADO'}
-                                    </span>
                                     <span className="trk-payment-method">
                                         {PAYMENT_LABELS[data.paymentMethod] || data.paymentMethod}
                                     </span>
-                                    <button className="trk-btn-icon" title="Más información">
-                                        {Icons.info}
-                                    </button>
+                                    {!data.paid && data.paymentInfoAvailable && (
+                                        <button className="trk-btn trk-btn-green" onClick={openPayModal}>
+                                            {Icons.creditCard}
+                                            VER DATOS PARA TRANSFERIR
+                                        </button>
+                                    )}
+                                    {!data.paid && !data.paymentInfoAvailable && (
+                                        <button className="trk-btn trk-btn-outline" onClick={() => setHelpOpen(true)}>
+                                            {Icons.helpCircle}
+                                            SOLICITAR DATOS DE PAGO
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
+
+                        {/* ═══ MODAL: DATOS PARA TRANSFERIR ═══ */}
+                        {payOpen && (
+                            <div className="trk-modal-overlay" onClick={closePayModal}>
+                                <div className="trk-modal" role="dialog" aria-modal="true" aria-labelledby="payModalTitle" onClick={(e) => e.stopPropagation()}>
+                                    <div className="trk-modal-header">
+                                        <h3 id="payModalTitle">Datos para transferir</h3>
+                                        <button className="trk-modal-close" onClick={closePayModal} aria-label="Cerrar">&times;</button>
+                                    </div>
+
+                                    {payLoading && <p className="trk-modal-desc">Cargando datos bancarios...</p>}
+
+                                    {!payLoading && payError && (
+                                        <p className="trk-modal-desc" role="alert">{payError}</p>
+                                    )}
+
+                                    {!payLoading && !payError && payInfo?.bankAccount && (
+                                        <>
+                                            <p className="trk-modal-desc">
+                                                Transfiere el monto exacto y conserva tu comprobante. Tu número de guía sirve como referencia.
+                                            </p>
+                                            <div className="trk-pay-rows">
+                                                {payRows.map((row) => (
+                                                    <div className="trk-pay-row" key={row.key}>
+                                                        <div className="trk-pay-row-info">
+                                                            <span className="trk-pay-row-label">{row.label}</span>
+                                                            <span className={`trk-pay-row-value ${row.mono ? 'is-mono' : ''}`}>{row.display}</span>
+                                                        </div>
+                                                        {row.copy && (
+                                                            <button
+                                                                className={`trk-copy-btn ${copiedKey === row.key ? 'is-copied' : ''}`}
+                                                                onClick={() => copyValue(row.key, row.copy!)}
+                                                                aria-label={`Copiar ${row.label}`}
+                                                            >
+                                                                {copiedKey === row.key ? 'Copiado' : 'Copiar'}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {payInfo.bankAccount.instructions && (
+                                                <p className="trk-pay-instructions">{payInfo.bankAccount.instructions}</p>
+                                            )}
+
+                                            <button
+                                                className={`trk-btn trk-btn-green trk-btn-lg trk-pay-copy-all ${copiedKey === 'all' ? 'is-copied' : ''}`}
+                                                onClick={() => copyValue('all', payRows.filter((r) => r.copy).map((r) => `${r.label}: ${r.copy}`).join('\n'))}
+                                            >
+                                                {Icons.copy}
+                                                {copiedKey === 'all' ? 'COPIADO' : 'COPIAR TODOS LOS DATOS'}
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* ═══ PACKAGE DETAILS ═══ */}
                         <div className="trk-card trk-package-card">

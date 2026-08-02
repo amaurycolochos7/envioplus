@@ -26,6 +26,29 @@ const templateSchema = z.object({
     branchId: z.string().uuid().optional(),
 });
 
+// Los números se guardan sin espacios ni guiones; el string vacío equivale a "sin dato"
+const digits = (max: number, min: number) =>
+    z.preprocess(
+        (v) => {
+            if (typeof v !== 'string') return v;
+            const clean = v.replace(/[\s-]/g, '');
+            return clean === '' ? undefined : clean;
+        },
+        z.string().regex(new RegExp(`^\\d{${min},${max}}$`), 'Solo dígitos').optional(),
+    );
+
+const bankAccountSchema = z.object({
+    bankName: z.string().trim().min(2, 'Nombre del banco requerido').max(60),
+    accountHolder: z.string().trim().min(2, 'Beneficiario requerido').max(80),
+    clabe: digits(18, 18),
+    cardNumber: digits(19, 15),
+    accountNumber: digits(20, 6),
+    instructions: z.string().trim().max(300).optional(),
+}).refine(
+    (d) => !!(d.clabe || d.cardNumber || d.accountNumber),
+    { message: 'Registra al menos CLABE, tarjeta o número de cuenta' },
+);
+
 const userSchema = z.object({
     email: z.string().email(),
     password: z.string().min(6),
@@ -67,6 +90,62 @@ export async function configRoutes(app: FastifyInstance) {
         if (user.role !== 'ADMIN') return reply.status(403).send({ error: 'Sin permisos' });
         const { id } = request.params as any;
         await prisma.branch.update({ where: { id }, data: { active: false } });
+        return { success: true };
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // DATOS BANCARIOS (configuración única)
+    // ═══════════════════════════════════════════════════════
+
+    // Datos sensibles: solo ADMIN los consulta o modifica desde el panel.
+    const onlyAdmin = (request: any, reply: any) => {
+        const user = request.user as any;
+        if (user.role !== 'ADMIN') {
+            reply.status(403).send({ error: 'Sin permisos' });
+            return false;
+        }
+        return true;
+    };
+
+    app.get('/bank-account', async (request, reply) => {
+        if (!onlyAdmin(request, reply)) return;
+        const account = await prisma.bankAccount.findFirst({
+            where: { active: true },
+            orderBy: { createdAt: 'asc' },
+        });
+        return account; // null si aún no se configura
+    });
+
+    app.put('/bank-account', async (request, reply) => {
+        if (!onlyAdmin(request, reply)) return;
+        const body = bankAccountSchema.parse(request.body);
+
+        const data = {
+            bankName: body.bankName,
+            accountHolder: body.accountHolder,
+            clabe: body.clabe ?? null,
+            cardNumber: body.cardNumber ?? null,
+            accountNumber: body.accountNumber ?? null,
+            instructions: body.instructions?.trim() ? body.instructions.trim() : null,
+            active: true,
+        };
+
+        // Se mantiene una sola configuración activa
+        const existing = await prisma.bankAccount.findFirst({
+            where: { active: true },
+            orderBy: { createdAt: 'asc' },
+        });
+
+        const account = existing
+            ? await prisma.bankAccount.update({ where: { id: existing.id }, data })
+            : await prisma.bankAccount.create({ data });
+
+        return account;
+    });
+
+    app.delete('/bank-account', async (request, reply) => {
+        if (!onlyAdmin(request, reply)) return;
+        await prisma.bankAccount.updateMany({ where: { active: true }, data: { active: false } });
         return { success: true };
     });
 

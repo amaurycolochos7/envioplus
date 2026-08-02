@@ -73,7 +73,7 @@ export const api = {
     getShipment: (id: string) =>
         request(`/shipments/${id}`).then(normalizeShipment),
     updateShipment: (id: string, data: any) =>
-        request(`/shipments/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+        request(`/shipments/${id}`, { method: 'PATCH', body: JSON.stringify(data) }).then(normalizeShipment),
     setShipmentPaid: (id: string, paid: boolean) =>
         request(`/shipments/${id}/payment`, { method: 'PATCH', body: JSON.stringify({ paid }) }),
     cancelShipment: (id: string, reason: string) =>
@@ -112,6 +112,13 @@ export const api = {
         request(`/config/print-templates/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
     deleteTemplate: (id: string) =>
         request(`/config/print-templates/${id}`, { method: 'DELETE' }),
+
+    // Datos bancarios (solo ADMIN)
+    getBankAccount: () => request('/config/bank-account'),
+    saveBankAccount: (data: any) =>
+        request('/config/bank-account', { method: 'PUT', body: JSON.stringify(data) }),
+    deleteBankAccount: () =>
+        request('/config/bank-account', { method: 'DELETE' }),
 
     getUsers: () => request('/config/users'),
     createUser: (data: any) =>

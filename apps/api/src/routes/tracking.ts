@@ -16,6 +16,9 @@ export async function trackingRoutes(app: FastifyInstance) {
     app.get('/:trackingNumber', async (request, reply) => {
         const { trackingNumber } = request.params as any;
 
+        // El cliente siempre debe ver el dato vigente de la guía
+        reply.header('Cache-Control', 'no-store, must-revalidate');
+
         const shipment = await prisma.shipment.findUnique({
             where: { trackingNumber },
             select: {
@@ -59,6 +62,10 @@ export async function trackingRoutes(app: FastifyInstance) {
             return reply.status(404).send({ error: 'No se encontró el envío' });
         }
 
+        // ¿Hay datos bancarios configurados? Solo se informa la disponibilidad,
+        // los datos se entregan en el endpoint dedicado.
+        const bankConfigured = await prisma.bankAccount.count({ where: { active: true } });
+
         // Calculate progress percentage based on status order
         const statusIdx = STATUS_ORDER.indexOf(shipment.currentStatus);
         const progressPercent = statusIdx >= 0
@@ -96,6 +103,7 @@ export async function trackingRoutes(app: FastifyInstance) {
             paymentMethod: shipment.paymentMethod,
             paid: shipment.paid,
             paidAt: shipment.paidAt,
+            paymentInfoAvailable: bankConfigured > 0,
             recipientName: shipment.recipientName,
             recipientPhone: shipment.recipientPhone,
             senderName: shipment.senderName,
@@ -106,6 +114,50 @@ export async function trackingRoutes(app: FastifyInstance) {
             originBranch: shipment.originBranch?.name || null,
             destinationBranch: shipment.destinationBranch?.name || null,
             events: shipment.events,
+        };
+    });
+
+    // ─── GET /tracking/:trackingNumber/payment-info ─────
+    // Datos para transferir. Solo se entregan si la guía existe y sigue pendiente.
+    app.get('/:trackingNumber/payment-info', async (request, reply) => {
+        const { trackingNumber } = request.params as any;
+        reply.header('Cache-Control', 'no-store, must-revalidate');
+
+        const shipment = await prisma.shipment.findUnique({
+            where: { trackingNumber },
+            select: { trackingNumber: true, totalAmount: true, paid: true },
+        });
+
+        if (!shipment) {
+            return reply.status(404).send({ error: 'No se encontró el envío' });
+        }
+
+        if (shipment.paid) {
+            return { paid: true, bankAccount: null };
+        }
+
+        const account = await prisma.bankAccount.findFirst({
+            where: { active: true },
+            orderBy: { createdAt: 'asc' },
+            select: {
+                bankName: true,
+                accountHolder: true,
+                clabe: true,
+                cardNumber: true,
+                accountNumber: true,
+                instructions: true,
+            },
+        });
+
+        if (!account) {
+            return reply.status(404).send({ error: 'Aún no hay datos bancarios configurados' });
+        }
+
+        return {
+            paid: false,
+            amount: shipment.totalAmount,
+            reference: shipment.trackingNumber,
+            bankAccount: account,
         };
     });
 }

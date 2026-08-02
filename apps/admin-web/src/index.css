@@ -945,6 +945,12 @@ textarea {
   border: 1px solid rgba(5, 150, 105, 0.15);
 }
 
+.alert-info {
+  background: var(--info-light, #EFF6FF);
+  color: var(--info, #1D4ED8);
+  border: 1px solid rgba(29, 78, 216, 0.15);
+}
+
 /* ─── 11. EMPTY STATES ───────────────────────────────────── */
 .empty-state {
   text-align: center;

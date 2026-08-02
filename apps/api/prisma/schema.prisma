@@ -97,6 +97,22 @@ model Branch {
   @@map("branches")
 }
 
+// ─── Datos bancarios (configuración única) ───────────────
+model BankAccount {
+  id            String   @id @default(uuid())
+  bankName      String   @map("bank_name")
+  accountHolder String   @map("account_holder")
+  clabe         String?
+  cardNumber    String?  @map("card_number")
+  accountNumber String?  @map("account_number")
+  instructions  String?
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("bank_accounts")
+}
+
 // ─── Guías / Envíos ──────────────────────────────────────
 model Shipment {
   id              String         @id @default(uuid())

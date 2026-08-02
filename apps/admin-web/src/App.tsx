@@ -6,6 +6,8 @@ import DashboardPage from './pages/DashboardPage';
 import CreateShipmentPage from './pages/CreateShipmentPage';
 import ShipmentsPage from './pages/ShipmentsPage';
 import ShipmentDetailPage from './pages/ShipmentDetailPage';
+import EditShipmentPage from './pages/EditShipmentPage';
+import BankAccountPage from './pages/BankAccountPage';
 import ScanPage from './pages/ScanPage';
 import BranchesPage from './pages/BranchesPage';
 import UsersPage from './pages/UsersPage';
@@ -28,12 +30,14 @@ export default function App() {
                     <Route index element={<Navigate to="/dashboard" replace />} />
                     <Route path="dashboard" element={<DashboardPage />} />
                     <Route path="shipments/new" element={<CreateShipmentPage />} />
+                    <Route path="shipments/:id/edit" element={<EditShipmentPage />} />
                     <Route path="shipments/:id" element={<ShipmentDetailPage />} />
                     <Route path="shipments" element={<ShipmentsPage />} />
                     <Route path="scan" element={<ScanPage />} />
                     <Route path="branches" element={<BranchesPage />} />
                     <Route path="users" element={<UsersPage />} />
                     <Route path="print-templates" element={<TemplatesPage />} />
+                    <Route path="bank-account" element={<BankAccountPage />} />
                     <Route path="reports" element={<ReportsPage />} />
                 </Route>
             </Routes>
