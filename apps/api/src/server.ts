@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import fjwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit';
+import { ZodError } from 'zod';
 import { authRoutes } from './routes/auth.js';
 import { shipmentRoutes } from './routes/shipments.js';
 import { eventRoutes } from './routes/events.js';
@@ -39,6 +40,31 @@ app.decorate('authenticate', async function (request: any, reply: any) {
     } catch (err) {
         reply.status(401).send({ error: 'No autorizado' });
     }
+});
+
+// ─── Manejo de errores ────────────────────────────────────
+// Los errores de validación deben llegar al usuario como mensaje claro (400),
+// no como "Internal Server Error".
+app.setErrorHandler((error: any, request, reply) => {
+    if (error instanceof ZodError) {
+        const first = error.errors[0];
+        const campo = first?.path?.join('.') || '';
+        return reply.status(400).send({
+            error: campo ? `${campo}: ${first.message}` : first?.message || 'Datos inválidos',
+        });
+    }
+
+    // Violación de unicidad en Prisma
+    if (error?.code === 'P2002') {
+        return reply.status(409).send({ error: 'Ya existe un registro con ese valor' });
+    }
+
+    const status = typeof error?.statusCode === 'number' && error.statusCode >= 400 ? error.statusCode : 500;
+    if (status >= 500) request.log.error(error);
+
+    return reply.status(status).send({
+        error: status >= 500 ? 'Error interno del servidor' : error.message || 'Solicitud inválida',
+    });
 });
 
 // ─── Health check ─────────────────────────────────────────
