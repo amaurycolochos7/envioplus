@@ -627,6 +627,11 @@ export default function TrackingPage() {
                                     )}
                                 </div>
                             </div>
+
+                            <div className="trk-payment-notice">
+                                <span className="trk-payment-notice-icon">{Icons.shield}</span>
+                                <p>Pago de seguro reembolsable una vez finalizada la entrega del pedido.</p>
+                            </div>
                         </div>
 
                         {/* ═══ MODAL: DATOS PARA TRANSFERIR ═══ */}
@@ -649,6 +654,10 @@ export default function TrackingPage() {
                                             <p className="trk-modal-desc">
                                                 Transfiere el monto exacto y conserva tu comprobante. Tu número de guía sirve como referencia.
                                             </p>
+                                            <div className="trk-payment-notice">
+                                                <span className="trk-payment-notice-icon">{Icons.shield}</span>
+                                                <p>Pago de seguro reembolsable una vez finalizada la entrega del pedido.</p>
+                                            </div>
                                             <div className="trk-pay-rows">
                                                 {payRows.map((row) => (
                                                     <div className="trk-pay-row" key={row.key}>

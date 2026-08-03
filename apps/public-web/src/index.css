@@ -3184,6 +3184,41 @@ textarea {
     margin-top: var(--space-1);
 }
 
+/* Leyenda del seguro reembolsable */
+.trk-payment-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cta);
+    border-radius: var(--radius-md);
+    background: var(--surface-2);
+}
+
+.trk-payment-notice p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--text);
+}
+
+.trk-payment-notice-icon {
+    display: flex;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    color: var(--cta);
+}
+
+.trk-payment-notice-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
 /* ─── Modal de datos para transferir ─── */
 .trk-pay-rows {
     display: flex;
