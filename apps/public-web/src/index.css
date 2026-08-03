@@ -3207,9 +3207,8 @@ textarea {
 .trk-payment-notice-icon {
     display: flex;
     flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    margin-top: 1px;
+    width: 24px;
+    height: 24px;
     color: var(--cta);
 }
 
