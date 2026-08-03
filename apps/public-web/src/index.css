@@ -3192,7 +3192,6 @@ textarea {
     margin-top: var(--space-5);
     padding: var(--space-3) var(--space-4);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--cta);
     border-radius: var(--radius-md);
     background: var(--surface-2);
 }
