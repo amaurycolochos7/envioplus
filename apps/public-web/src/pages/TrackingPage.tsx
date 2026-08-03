@@ -597,9 +597,6 @@ export default function TrackingPage() {
                         <div className="trk-card trk-payment-card">
                             <div className="trk-payment-head">
                                 <h4 className="trk-section-title-plain">PAGO</h4>
-                                <span className={`trk-payment-flag ${data.paid ? 'is-paid' : 'is-unpaid'}`}>
-                                    {data.paid ? 'PAGADO' : 'PENDIENTE DE PAGO'}
-                                </span>
                             </div>
                             <div className="trk-payment-row">
                                 <div className="trk-payment-main">
@@ -618,6 +615,9 @@ export default function TrackingPage() {
                                 <div className="trk-payment-actions">
                                     <span className="trk-payment-method">
                                         {PAYMENT_LABELS[data.paymentMethod] || data.paymentMethod}
+                                    </span>
+                                    <span className={`trk-payment-flag ${data.paid ? 'is-paid' : 'is-unpaid'}`}>
+                                        {data.paid ? 'PAGADO' : 'PENDIENTE DE PAGO'}
                                     </span>
                                     {!data.paid && data.paymentInfoAvailable && (
                                         <button className="trk-btn trk-btn-green" onClick={openPayModal}>
