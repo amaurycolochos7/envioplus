@@ -607,13 +607,13 @@ export default function TrackingPage() {
                                     <h3 className="trk-payment-amount">
                                         ${data.totalAmount?.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                                     </h3>
-                                    <p className="muted trk-payment-help">
-                                        {data.paid
-                                            ? 'Tu pago está confirmado. No tienes que realizar ningún depósito adicional por esta guía.'
-                                            : data.paymentInfoAvailable
-                                                ? 'Realiza la transferencia por el monto total y usa tu número de guía como referencia.'
-                                                : 'Comunícate con nosotros para recibir las indicaciones de pago de esta guía.'}
-                                    </p>
+                                    {(data.paid || data.paymentInfoAvailable) && (
+                                        <p className="muted trk-payment-help">
+                                            {data.paid
+                                                ? 'Tu pago está confirmado. No tienes que realizar ningún depósito adicional por esta guía.'
+                                                : 'Realiza la transferencia por el monto total y usa tu número de guía como referencia.'}
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="trk-payment-actions">
                                     <span className="trk-payment-method">
@@ -623,12 +623,6 @@ export default function TrackingPage() {
                                         <button className="trk-btn trk-btn-green" onClick={openPayModal}>
                                             {Icons.creditCard}
                                             VER DATOS PARA TRANSFERIR
-                                        </button>
-                                    )}
-                                    {!data.paid && !data.paymentInfoAvailable && (
-                                        <button className="trk-btn trk-btn-outline" onClick={() => setHelpOpen(true)}>
-                                            {Icons.helpCircle}
-                                            SOLICITAR DATOS DE PAGO
                                         </button>
                                     )}
                                 </div>

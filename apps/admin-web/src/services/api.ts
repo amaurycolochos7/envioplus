@@ -24,10 +24,10 @@ export function setStoredUser(user: any) {
 
 async function request(path: string, options: RequestInit = {}) {
     const token = getToken();
-    const headers: any = {
-        'Content-Type': 'application/json',
-        ...options.headers,
-    };
+    const headers: any = { ...options.headers };
+    // Solo se declara JSON cuando de verdad se manda cuerpo: un DELETE con
+    // Content-Type y sin body hace que el servidor responda 400.
+    if (options.body) headers['Content-Type'] = 'application/json';
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
     const res = await fetch(`${API_URL}${path}`, { ...options, headers });
